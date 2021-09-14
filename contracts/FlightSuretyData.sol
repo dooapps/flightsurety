@@ -11,11 +11,13 @@ contract FlightSuretyData {
     address private owner;                                      // Account used to deploy contract
     bool private operational = true;                            // Blocks all state changes throughout the contract if false
     address[] airlines_registered = new address[](0);
+   
     uint256 count_airlines;
+    uint256 count_consensus;
     uint256 count_funded;
     
     
-    
+    mapping(address => address[]) private consensus_airlines;
 
     struct Airline {
         bool is_registered;
@@ -155,7 +157,7 @@ contract FlightSuretyData {
                             public
                             requireAirlineRegistered(_airline)
     {
-//        recipient.transfer(msg.value); //// TODO causes test to fail; not funded
+
         airlines[_airline].is_funded = true;
         callers[_airline] = true;
 
@@ -178,18 +180,23 @@ contract FlightSuretyData {
         airlines[airline].is_funded = false;
         count_airlines = count_airlines.add(1);
 
-        
-
-
 
         return(true);
     }
 
-    function GetAirlines() external view
+    function getAirlines() external view
     returns(uint256 count) {
         return count_airlines;
     }
 
+
+    function getConsensus(address airline) 
+    external 
+    view
+    requireIsOperational
+    returns(uint256 count){
+        return count_consensus;
+    }
 
 
 }

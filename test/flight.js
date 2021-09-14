@@ -103,9 +103,11 @@ contract("Flight Surety Tests", accounts => {
   it('airline cannot register an Airline using registerAirline() if it is not funded', async () => {
     let new_airline = accounts[2];
     try {
-        await config.flightSuretyApp.registerAirline(new_airline, {from: config.firstAirline});
+        registe_airline = await config.flightSuretyApp.registerAirline(new_airline, {from: config.firstAirline});
+        console.log(registe_airline);
     }
     catch(e) {
+      console.log(e.message)
     }
     let res = await config.flightSuretyApp.isAirline(new_airline); 
     assert.equal(res, false, "Airline should not be able to register another airline if it hasn't provided funding");

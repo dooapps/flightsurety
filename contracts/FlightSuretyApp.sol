@@ -16,14 +16,21 @@ contract FlightSuretyApp {
 
     event Response(bool success, bytes data);
 
+    uint256 constant MULTIPARTY_CONSENSUS = 4;
+    uint256 constant MULTIPARTY_CONSENSUS_DIVISOR = 2;
+
     address private owner;                                      // Account used to deploy contract
     bool private operational = true; 
+    
      
     
     FlightSuretyData private flightSuretyData;
 
     // list of all airlines
     address[] private airlines = new address[](0);
+    mapping(address => address[]) private airlines_approved;
+ 
+
 
     /********************************************************************************************/
     /*                                   CONSTRUCTOR & FALLBACK                                 */
@@ -51,21 +58,13 @@ contract FlightSuretyApp {
 
     public 
     payable
-    returns(bool)
     {
         // Call returns a boolean value indicating success or failure.
         // This is the current recommended method to use.
-        
-        if(msg.value > 10 ether){
             (bool sent, bytes memory data) = _to.call{value: msg.value}("");
             flightSuretyData.fund(msg.sender);
             require(sent, "Failed to send Ether");
             emit Response(sent, data);
-            return sent;
-        }
-        else{
-            return false;
-        }
 
     }
 
@@ -112,8 +111,7 @@ contract FlightSuretyApp {
 
 
 /// @dev Register an airline
-    function registerAirline(address airline)
-        public 
+    function registerAirline(address airline)  public
         requireIsOperational  
         returns(bool success)                         
     {
@@ -121,15 +119,29 @@ contract FlightSuretyApp {
         require(flightSuretyData.isRegisteredAirline(airline) == false, "Airline already registered");
 
 
-        uint256 count_airlines = flightSuretyData.GetAirlines();
-        if ( count_airlines < 5) {
-            flightSuretyData.registerAirline(airline);
-            success = flightSuretyData.isRegisteredAirline(airline);
-        }
+    //     uint256 count_airlines = flightSuretyData.getAirlines();
+    //     if (count_airlines <= MULTIPARTY_CONSENSUS) {
+    //         flightSuretyData.registerAirline(airline);
+    //         success = flightSuretyData.isRegisteredAirline(airline);
+    //     }
         
-       flightSuretyData.fund(airline);
-        
-       return true;
+    //     if (count_airlines > MULTIPARTY_CONSENSUS){
+    //         bool is_duplicated = false;
+    //             for(uint a = 0; a < airlines_approved[airline].length; a++) {
+    //                 if (airlines_approved[airline][a] == msg.sender) {
+    //                     is_duplicated = true;
+    //                     break;
+    //                 }
+    //             }
+    //         require(!is_duplicated, "Airline has already approved.");
+    //     }
+    //     airlines_approved[airline].push(msg.sender);
+
+
+
+    //    flightSuretyData.fund(airline);
+       success == false;
+       return success;
         
         
     }
