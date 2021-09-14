@@ -15,6 +15,7 @@ contract FlightSuretyApp {
     error InsufficientBalance(uint requested, uint available);
 
     event Response(bool success, bytes data);
+    event ResponseSuccess(bool success);
 
     uint256 constant MULTIPARTY_CONSENSUS = 4;
     uint256 constant MULTIPARTY_CONSENSUS_DIVISOR = 2;
@@ -106,13 +107,14 @@ contract FlightSuretyApp {
                             external
                             returns(bool)
     {
-        return(flightSuretyData.isAirline(airline));
+        bool success = flightSuretyData.isAirline(airline);
+        emit ResponseSuccess(success);
+        return flightSuretyData.isAirline(airline);
     }
 
 
 /// @dev Register an airline
     function registerAirline(address airline)  public
-        requireIsOperational  
         returns(bool success)                         
     {
         // require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
@@ -141,7 +143,7 @@ contract FlightSuretyApp {
 
     //    flightSuretyData.fund(airline);
        success == false;
-       return success;
+       return false;
         
         
     }

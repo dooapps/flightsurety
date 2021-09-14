@@ -108,7 +108,7 @@ contract FlightSuretyData {
     * @dev determine if an address is an airline
     * @return A bool that is true if it is a funded airline
     */
-    function isAirline( address airline )
+    function isAirline(address airline )
                             external
                             view
                             returns(bool)
