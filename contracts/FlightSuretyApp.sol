@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-pragma experimental ABIEncoderV2;
+pragma abicoder v2;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./FlightSuretyData.sol";
@@ -40,6 +40,8 @@ contract FlightSuretyApp {
     {
         owner = msg.sender;
         flightSuretyData = FlightSuretyData(_contract);
+
+        
     }
 
     function send
@@ -48,7 +50,9 @@ contract FlightSuretyApp {
     )
 
     public 
-    payable {
+    payable
+    returns(bool)
+    {
         // Call returns a boolean value indicating success or failure.
         // This is the current recommended method to use.
         
@@ -57,6 +61,10 @@ contract FlightSuretyApp {
             flightSuretyData.fund(msg.sender);
             require(sent, "Failed to send Ether");
             emit Response(sent, data);
+            return sent;
+        }
+        else{
+            return false;
         }
 
     }
@@ -94,17 +102,39 @@ contract FlightSuretyApp {
         return true;
     }
 
+
+    function isAirline(address airline)
+                            external
+                            returns(bool)
+    {
+        return(flightSuretyData.isAirline(airline));
+    }
+
+
 /// @dev Register an airline
-    function _registerAirline(address airline)
-        private 
+    function registerAirline(address airline)
+        public 
         requireIsOperational  
         returns(bool success)                         
     {
-        require(flightSuretyData.isAirline(msg.sender), 
-        "Requesting Airline is not funded");
-        flightSuretyData.fund(airline);
-        return true;
+        require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
+        require(flightSuretyData.isRegisteredAirline(airline) == false, "Airline already registered");
+
+
+        uint256 count_airlines = flightSuretyData.GetAirlines();
+        if ( count_airlines < 5) {
+            flightSuretyData.registerAirline(airline);
+            success = flightSuretyData.isRegisteredAirline(airline);
+        }
+        
+       flightSuretyData.fund(airline);
+        
+       return true;
+        
+        
     }
+
+    
 
 
 }

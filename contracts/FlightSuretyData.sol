@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-pragma experimental ABIEncoderV2;
+pragma abicoder v2;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
@@ -11,7 +11,8 @@ contract FlightSuretyData {
     address private owner;                                      // Account used to deploy contract
     bool private operational = true;                            // Blocks all state changes throughout the contract if false
     address[] airlines_registered = new address[](0);
-    
+    uint256 count_airlines;
+    uint256 count_funded;
     
     
     
@@ -34,7 +35,7 @@ contract FlightSuretyData {
     {
         owner = msg.sender;      
         
-
+        count_airlines = count_airlines.add(1);                 // count how many airlines are available
         airlines[owner].is_registered = true;
         airlines[owner].is_funded = true;
                 
@@ -101,6 +102,30 @@ contract FlightSuretyData {
         return operational;
     }
 
+    /**
+    * @dev determine if an address is an airline
+    * @return A bool that is true if it is a funded airline
+    */
+    function isAirline( address airline )
+                            external
+                            view
+                            returns(bool)
+    {
+        return airlines[airline].is_funded;
+    }
+
+   function isRegisteredAirline(address _airline) external view
+    returns(bool) {
+        return airlines[_airline].is_registered;
+    }
+    
+
+
+    /********************************************************************************************/
+    /*                                     SMART CONTRACT FUNCTIONS                             */
+    /********************************************************************************************/
+    //----------------------------------------------------------------------------------------------
+
     /// @dev Add an authorized address
     function authorizeCaller(address _address) external requireOwner {
         callers[_address] = true;
@@ -116,17 +141,6 @@ contract FlightSuretyData {
         operational = mode;
     }
 
-    /**
-    * @dev determine if an address is an airline
-    * @return A bool that is true if it is a funded airline
-    */
-    function isAirline( address airline )
-                            external
-                            view
-                            returns(bool)
-    {
-        return airlines[airline].is_funded;
-    }
 
 
    /**
@@ -146,6 +160,36 @@ contract FlightSuretyData {
         callers[_airline] = true;
 
     }
+
+   /**
+    * @dev Add an airline to the registration queue
+    *      Can only be called from FlightSuretyApp contract
+    *
+    */
+    function registerAirline
+                            (
+                                address airline
+                            )
+                            external
+                            requireIsOperational
+                            returns(bool)
+    {
+        airlines[airline].is_registered = true;
+        airlines[airline].is_funded = false;
+        count_airlines = count_airlines.add(1);
+
+        
+
+
+
+        return(true);
+    }
+
+    function GetAirlines() external view
+    returns(uint256 count) {
+        return count_airlines;
+    }
+
 
 
 }

@@ -73,14 +73,59 @@ contract("Flight Surety Tests", accounts => {
 
   });
 
-  it("should send payment correctly", async () => {
-    // send coins from account 1 to 2
-    const amount = Web3.utils.toWei('10', 'ether');
-    await config.flightSuretyApp.send(accounts[3], { from: accounts[1], value: amount });
+  it(`(multiparty) can block access to functions using requireIsOperational when operating status is false`, async function () {
 
+    let operational = await config.flightSuretyData.isOperational();
+    //console.log(operational);
 
+    if (operational == true) {
+        await config.flightSuretyData.setOperatingStatus(false, {from: config.owner});
+    }
+
+    let reverted = false;
+    try 
+    {
+        res = await config.flightSuretyApp.registerAirline(accounts[4], {from: config.firstAirline});
+        print(res);
+    }
+    catch(e) {
+        reverted = true;
+    }
+    assert.equal(reverted, true, "Access not blocked for requireIsOperational");      
+
+    // Set it back for other tests to work
+    operational = await config.flightSuretyData.isOperational();
+    if (operational == false) {
+        await config.flightSuretyData.setOperatingStatus(true, {from: config.owner});
+    }
+  });
+
+  it('airline cannot register an Airline using registerAirline() if it is not funded', async () => {
+    let new_airline = accounts[2];
+    try {
+        await config.flightSuretyApp.registerAirline(new_airline, {from: config.firstAirline});
+    }
+    catch(e) {
+    }
+    let res = await config.flightSuretyApp.isAirline(new_airline); 
+    assert.equal(res, false, "Airline should not be able to register another airline if it hasn't provided funding");
 
   });
+ 
+  it(`First Airline is registered when contract is deployed`, async function () {
+    // Determine if Airline is registered
+    let res = await config.flightSuretyData.isRegisteredAirline(config.owner);
+    assert.equal(res, true, "First airline was not registed upon contract creation");
+  });
+
+
+
+
+  // it("should send payment correctly", async () => {
+  //   // send coins from account 1 to 2
+  //   const amount = Web3.utils.toWei('10', 'ether');
+  //   await config.flightSuretyApp.send(accounts[3], { from: accounts[1], value: amount });
+  // });
 
 
 });
