@@ -107,41 +107,43 @@ contract FlightSuretyApp {
                             external
                             returns(bool)
     {
-        bool success = flightSuretyData.isAirline(airline);
-        emit ResponseSuccess(success);
         return flightSuretyData.isAirline(airline);
     }
 
 
 /// @dev Register an airline
-    function registerAirline(address airline)  public
+    function registerAirline
+    (
+        address airline
+    ) 
+    public
         returns(bool success)                         
     {
-        // require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
-        // require(flightSuretyData.isRegisteredAirline(airline) == false, "Airline already registered");
+        require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
+        require(flightSuretyData.isRegisteredAirline(airline) == false, "Airline already registered");
 
 
-    //     uint256 count_airlines = flightSuretyData.getAirlines();
-    //     if (count_airlines <= MULTIPARTY_CONSENSUS) {
-    //         flightSuretyData.registerAirline(airline);
-    //         success = flightSuretyData.isRegisteredAirline(airline);
-    //     }
+        uint256 count_airlines = flightSuretyData.getAirlines();
+        if (count_airlines <= MULTIPARTY_CONSENSUS) {
+            flightSuretyData.registerAirline(airline);
+            success = flightSuretyData.isRegisteredAirline(airline);
+        }
         
-    //     if (count_airlines > MULTIPARTY_CONSENSUS){
-    //         bool is_duplicated = false;
-    //             for(uint a = 0; a < airlines_approved[airline].length; a++) {
-    //                 if (airlines_approved[airline][a] == msg.sender) {
-    //                     is_duplicated = true;
-    //                     break;
-    //                 }
-    //             }
-    //         require(!is_duplicated, "Airline has already approved.");
-    //     }
-    //     airlines_approved[airline].push(msg.sender);
+        if (count_airlines > MULTIPARTY_CONSENSUS){
+            bool is_duplicated = false;
+                for(uint a = 0; a < airlines_approved[airline].length; a++) {
+                    if (airlines_approved[airline][a] == msg.sender) {
+                        is_duplicated = true;
+                        break;
+                    }
+                }
+            require(!is_duplicated, "Airline has already approved.");
+        }
+        airlines_approved[airline].push(msg.sender);
 
 
 
-    //    flightSuretyData.fund(airline);
+       flightSuretyData.fund(airline);
        success == false;
        return false;
         
