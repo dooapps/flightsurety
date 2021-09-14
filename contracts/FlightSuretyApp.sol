@@ -115,8 +115,8 @@ contract FlightSuretyApp {
         requireIsOperational  
         returns(bool success)                         
     {
-        require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
-        require(flightSuretyData.isRegisteredAirline(airline) == false, "Airline already registered");
+        // require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
+        // require(flightSuretyData.isRegisteredAirline(airline) == false, "Airline already registered");
 
 
     //     uint256 count_airlines = flightSuretyData.getAirlines();

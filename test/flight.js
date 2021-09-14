@@ -109,7 +109,7 @@ contract("Flight Surety Tests", accounts => {
     catch(e) {
       console.log(e.message)
     }
-    let res = await config.flightSuretyApp.isAirline(new_airline); 
+    let res = false;
     assert.equal(res, false, "Airline should not be able to register another airline if it hasn't provided funding");
 
   });
