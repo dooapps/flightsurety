@@ -15,19 +15,36 @@ contract FlightSuretyData {
     uint256 count_airlines;
     uint256 count_consensus;
     uint256 count_funded;
-    
-    
-    mapping(address => address[]) private consensus_airlines;
+    uint256 public constant fee = 1 ether;
+       
+    bytes32[] private cs_flights;
 
     struct Airline {
         bool is_registered;
         bool is_funded;
     }
 
+
+    struct Flight {
+        string flight;
+        bool is_flight_registered;
+        uint8 status_code;
+        uint256 departure;        
+        address airline;
+    }
+
+    struct Insurance{
+        uint256 amount;
+        address passenger;
+        bool    activate;
+    }
+
     mapping(address => bool) private callers;                   // all authorized contracts (callers)
     mapping(address=>Airline) private airlines; 
+    mapping(address => address[]) private consensus_airlines;
+    mapping(bytes32 => Flight) private flights;
 
-
+    
 
     /**
     * @dev Constructor
@@ -84,7 +101,10 @@ contract FlightSuretyData {
     /**
     * @dev Modifier that requires the "owner" account to be the function caller
     */
-    modifier requireAirlineRegistered( address _airline )
+    modifier requireAirlineRegistered
+    ( 
+        address _airline 
+    )
     {
         require(airlines[_airline].is_registered, 
         "Airline is not registered");
@@ -113,6 +133,7 @@ contract FlightSuretyData {
                             view
                             returns(bool)
     {
+
         return airlines[airline].is_funded;
     }
 
@@ -121,7 +142,18 @@ contract FlightSuretyData {
         return airlines[_airline].is_registered;
     }
     
+    function isFlightRegistered
+    (
+        bytes32 key
+    ) 
+    external 
+    view 
+    returns(bool) 
+    {
+        return flights[key].airline != address(0);
+    }
 
+    
 
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
@@ -129,7 +161,12 @@ contract FlightSuretyData {
     //----------------------------------------------------------------------------------------------
 
     /// @dev Add an authorized address
-    function authorizeCaller(address _address) external requireOwner {
+    function authorizeCaller
+    (
+        address _address
+    ) 
+    external 
+    requireOwner {
         callers[_address] = true;
     }
 
@@ -160,6 +197,7 @@ contract FlightSuretyData {
 
         airlines[_airline].is_funded = true;
         callers[_airline] = true;
+        count_funded = count_funded.add(1); 
 
     }
 
@@ -184,19 +222,76 @@ contract FlightSuretyData {
         return(true);
     }
 
+    function registerFlight
+    (
+        bytes32 _key, 
+        address _airline, 
+        uint256 _departure,  
+        string calldata _flight,
+        uint8 _status_code
+    ) 
+    external 
+    requireIsOperational 
+    requireCallers
+    requireAirlineRegistered(_airline)
+    {
+        flights[_key].airline = _airline;
+        flights[_key].is_flight_registered = true;
+        flights[_key].departure = _departure;
+        flights[_key].status_code = _status_code;
+        
+        cs_flights.push(_key);
+    }
+
     function getAirlines() external view
     returns(uint256 count) {
         return count_airlines;
     }
 
+    function getFunded() 
+    external 
+    view
+    returns(uint256 count){
+        return count_funded;
+    }
 
-    function getConsensus(address airline) 
+    function getConsensus() 
     external 
     view
     requireIsOperational
     returns(uint256 count){
         return count_consensus;
     }
+
+    function getCurrentFlights() 
+    external 
+    view 
+    requireIsOperational 
+    requireCallers 
+    returns (bytes32[] memory ) {
+        return cs_flights;
+    }
+
+    function getFlightInfo
+    (
+        bytes32 _key
+    ) 
+    requireIsOperational
+    public 
+    view 
+    returns
+    (
+        string memory,
+        uint256,
+        address,
+        uint8
+    ) 
+        {
+        require(flights[_key].airline != address(0));
+        return(flights[_key].flight, flights[_key].departure, flights[_key].airline, flights[_key].status_code);    
+        }
+
+
 
 
 }

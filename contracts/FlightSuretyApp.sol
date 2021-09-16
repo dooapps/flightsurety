@@ -16,9 +16,17 @@ contract FlightSuretyApp {
 
     event Response(bool success, bytes data);
     event ResponseSuccess(bool success);
+    event ResponseFlightRegistered(bytes32 key);
 
     uint256 constant MULTIPARTY_CONSENSUS = 4;
     uint256 constant MULTIPARTY_CONSENSUS_DIVISOR = 2;
+
+    uint8 private constant STATUS_CODE_UNKNOWN = 0;
+    uint8 private constant STATUS_CODE_ON_TIME = 10;
+    uint8 private constant STATUS_CODE_LATE_AIRLINE = 20;
+    uint8 private constant STATUS_CODE_LATE_WEATHER = 30;
+    uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
+    uint8 private constant STATUS_CODE_LATE_OTHER = 50;
 
     address private owner;                                      // Account used to deploy contract
     bool private operational = true; 
@@ -29,6 +37,7 @@ contract FlightSuretyApp {
 
     // list of all airlines
     address[] private airlines = new address[](0);
+    
     mapping(address => address[]) private airlines_approved;
  
 
@@ -91,19 +100,25 @@ contract FlightSuretyApp {
         _;  // All modifiers require an "_" which indicates where the function body will be added
     }
 
-
-
     /********************************************************************************************/
     /*                                 FUNCTIONS FOR TESTING ONLY                               */
     /********************************************************************************************/
 
     /// @dev used for testing requireIsOperational, always returns true
-    function testIsOperational() public view requireIsOperational returns(bool) {
+    function testIsOperational() 
+    public 
+    view 
+    requireIsOperational 
+    returns(bool) 
+    {
         return true;
     }
 
 
-    function isAirline(address airline)
+    function isAirline
+    (
+        address airline
+    )
                             external
                             returns(bool)
     {
@@ -140,14 +155,39 @@ contract FlightSuretyApp {
             require(!is_duplicated, "Airline has already approved.");
         }
         airlines_approved[airline].push(msg.sender);
+        uint256 airlines_consensus = flightSuretyData.getConsensus();
+        if (airlines_approved[airline].length >= airlines_consensus) {
+                flightSuretyData.registerAirline(airline);
+                success = flightSuretyData.isRegisteredAirline(airline);
+        }
 
 
 
-       flightSuretyData.fund(airline);
-       success == false;
-       return false;
+        flightSuretyData.fund(airline);
+        success == false;
+        return false;
         
         
+    }
+
+    function registerFlight 
+    (
+        string calldata _flight, 
+        uint256 _departure 
+    ) 
+    external 
+    requireIsOperational 
+     {
+        bytes32 key = getFlightKey(msg.sender, _flight, _departure);
+        require(!flightSuretyData.isFlightRegistered(key), "This flight is already registered");
+        flightSuretyData.registerFlight(key, msg.sender, _departure, _flight, STATUS_CODE_UNKNOWN);
+
+        emit ResponseFlightRegistered(key);
+    }
+
+
+    function getFlightKey(address airline, string memory flight, uint256 timestamp) pure internal returns(bytes32) {
+        return keccak256(abi.encodePacked(airline, flight, timestamp));
     }
 
     
