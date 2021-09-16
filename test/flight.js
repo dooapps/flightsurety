@@ -184,12 +184,23 @@ contract("Flight Surety Tests", accounts => {
     
 
     it('Can register flight', async () => {
-      await config.flightSuretyApp.registerFlight("1098", new Date().getTime(), {from: config.firstAirline});
+      await config.flightSuretyApp.registerFlight("1098", new Date().getTime(), {from: config.owner});
     });
 
     it('Current flight', async () => {
+
+      
       res = await config.flightSuretyData.getCurrentFlight();
-      console.log(res);
+      for (let i = 0; i < res.length; i++) {
+       // console.log(res[i]);
+        ref = await config.flightSuretyData.getFlightInfo('0x6af2e2a6ac147e3d1c8f52308b93a33fa4b028f06c224631555c4961a26f97b0');
+        console.log(ref.toString());
+        for (let x = 0; x < ref.length; x++) {
+          console.log(x);
+        }
+          ;
+      } 
+      
     });
 
 

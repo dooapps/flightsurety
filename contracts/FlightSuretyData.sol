@@ -234,7 +234,6 @@ contract FlightSuretyData {
     ) 
     external 
     requireIsOperational 
-    requireCallers
     requireAirlineRegistered(_airline)
     {
         flights[_key].airline = _airline;
@@ -245,7 +244,9 @@ contract FlightSuretyData {
         cs_flights.push(_key);
     }
 
-    function getAirlines() external view
+    function getAirlines() 
+    external 
+    view
     returns(uint256 count) {
         return count_airlines;
     }
@@ -265,11 +266,12 @@ contract FlightSuretyData {
         return count_consensus;
     }
 
+
     function getCurrentFlight() 
     external 
-    view 
-    returns (bytes32[] memory) {
-        return cs_flights;
+    view
+    returns(bytes32[] memory) {
+        return(cs_flights);
     }
 
     function getFlightInfo
@@ -287,8 +289,11 @@ contract FlightSuretyData {
         uint8
     ) 
         {
-        require(flights[_key].airline != address(0));
-        return(flights[_key].flight, flights[_key].departure, flights[_key].airline, flights[_key].status_code);    
+        return(
+            flights[_key].flight, 
+            flights[_key].departure, 
+            flights[_key].airline, 
+            flights[_key].status_code);    
         }
 
 
