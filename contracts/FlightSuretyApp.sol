@@ -178,7 +178,8 @@ contract FlightSuretyApp {
     requireIsOperational 
      {
         bytes32 key = getFlightKey(msg.sender, _flight, _departure);
-        require(!flightSuretyData.isFlightRegistered(key), "This flight is already registered");
+        emit ResponseFlightRegistered(key);
+        //require(!flightSuretyData.isFlightRegistered(key), "This flight is already registered");
         flightSuretyData.registerFlight(key, msg.sender, _departure, _flight, STATUS_CODE_UNKNOWN);
 
         emit ResponseFlightRegistered(key);

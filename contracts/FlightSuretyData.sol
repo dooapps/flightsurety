@@ -15,6 +15,7 @@ contract FlightSuretyData {
     uint256 count_airlines;
     uint256 count_consensus;
     uint256 count_funded;
+    Flight[] private lst_flights;
     uint256 public constant fee = 1 ether;
        
     bytes32[] private cs_flights;
@@ -113,11 +114,23 @@ contract FlightSuretyData {
         _;
     }
 
+        /**
+    * @dev Modifier that requires the "owner" account to be the function caller
+    */
+    modifier requireFlightRegistered
+    ( 
+        bytes32 _key 
+    )
+    {
+        require(flights[_key].is_flight_registered, 
+        "Flight is registered");
+        _;
+    }
+
+
     /********************************************************************************************/
     /*                                       UTILITY FUNCTIONS                                  */
     /********************************************************************************************/
-
-
     function isOperational() 
                             public 
                             view 
@@ -139,21 +152,12 @@ contract FlightSuretyData {
         return airlines[airline].is_funded;
     }
 
-   function isRegisteredAirline(address _airline) external view
+    function isRegisteredAirline(address _airline) external view
     returns(bool) {
         return airlines[_airline].is_registered;
     }
     
-    function isFlightRegistered
-    (
-        bytes32 key
-    ) 
-    external 
-    view 
-    returns(bool) 
-    {
-        return flights[key].airline != address(0);
-    }
+
 
     
 
@@ -235,11 +239,15 @@ contract FlightSuretyData {
     external 
     requireIsOperational 
     requireAirlineRegistered(_airline)
+
     {
+            
         flights[_key].airline = _airline;
         flights[_key].is_flight_registered = true;
         flights[_key].departure = _departure;
         flights[_key].status_code = _status_code;
+
+        lst_flights.push(flights[_key]);
         
         cs_flights.push(_key);
     }
@@ -283,17 +291,10 @@ contract FlightSuretyData {
     view 
     returns
     (
-        string memory,
-        uint256,
-        address,
-        uint8
+        Flight memory
     ) 
         {
-        return(
-            flights[_key].flight, 
-            flights[_key].departure, 
-            flights[_key].airline, 
-            flights[_key].status_code);    
+        return(flights[_key]);
         }
 
 
