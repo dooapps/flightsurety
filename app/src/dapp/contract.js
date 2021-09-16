@@ -1,4 +1,5 @@
-import FlightSuretyApp from '../../build/contracts/FlightSuretyApp.json';
+import FlightSuretyData from '../../build/contracts/FlightSuretyData.json';
+import FlightSuretyApp  from '../../build/contracts/FlightSuretyApp.json';
 import Config from './config.json';
 import Web3 from 'web3';
 
@@ -14,19 +15,22 @@ export default class Contract {
         this.passengers = [];
     }
 
-    initialize(callback) {
-        this.web3.eth.getAccounts((error, accts) => {
+    async initialize(callback) {
+        this.web3.eth.getAccounts((error, accounts) => {
            
-            this.owner = accts[0];
+            this.owner = accounts[0];
 
             let counter = 1;
+
+            console.log("Owner: "+ this.owner);
+            console.log("Passenger: "+ this.passenger);
             
             while(this.airlines.length < 5) {
-                this.airlines.push(accts[counter++]);
+                this.airlines.push(accounts[counter++]);
             }
 
             while(this.passengers.length < 5) {
-                this.passengers.push(accts[counter++]);
+                this.passengers.push(accounts[counter++]);
             }
 
             callback();
@@ -45,7 +49,7 @@ export default class Contract {
         let payload = {
             airline: self.airlines[0],
             flight: flight,
-            timestamp: Math.floor(Date.now() / 1000)
+            departe: Math.floor(Date.now() / 1000)
         } 
         self.flightSuretyApp.methods
             .fetchFlightStatus(payload.airline, payload.flight, payload.timestamp)

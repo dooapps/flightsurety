@@ -162,7 +162,7 @@ contract("Flight Surety Tests", accounts => {
     await config.flightSuretyApp.send(newAirline3, {from: newAirline3, value: amount}); 
     await config.flightSuretyApp.send(newAirline4, {from: newAirline4, value: amount}); 
 
-    console.log("Number of airlines : "+ await config.flightSuretyData.getAirlines());
+    console.log("Number of airlines: "+ await config.flightSuretyData.getAirlines());
     console.log("Funded airlines count: "+ await config.flightSuretyData.getFunded());
         
     assert.equal(await config.flightSuretyApp.isAirline.call(newAirline2), true, "second airline is not funded yet.");
@@ -181,10 +181,17 @@ contract("Flight Surety Tests", accounts => {
     assert.equal(resultnewAirline5, true,  "The 5th airline should be accepted after getting 2 votes out of 4");
     });
 
+    
+
     it('Can register flight', async () => {
       await config.flightSuretyApp.registerFlight("1098", new Date().getTime(), {from: config.firstAirline});
-      await config.flightSuretyApp.registerFlight("7654", new Date().getTime(), {from: config.firstAirline});
-   });
+    });
+
+    it('Current flight', async () => {
+      res = await config.flightSuretyData.getCurrentFlight();
+      console.log(res);
+    });
+
 
 
   // it("should send payment correctly", async () => {

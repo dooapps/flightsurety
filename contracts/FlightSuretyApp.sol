@@ -85,8 +85,7 @@ contract FlightSuretyApp {
     /********************************************************************************************/
 
     /// @dev make sure fallback function is not not payable so can't be used for funding smart contract
-    fallback() external {
-    }
+    fallback() external {}
 
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */

@@ -18,6 +18,7 @@ contract FlightSuretyData {
     uint256 public constant fee = 1 ether;
        
     bytes32[] private cs_flights;
+    
 
     struct Airline {
         bool is_registered;
@@ -42,8 +43,9 @@ contract FlightSuretyData {
     mapping(address => bool) private callers;                   // all authorized contracts (callers)
     mapping(address=>Airline) private airlines; 
     mapping(address => address[]) private consensus_airlines;
+    mapping(address => address[]) private flights_airlines;
     mapping(bytes32 => Flight) private flights;
-
+    mapping(bytes32 => uint) flight_key;
     
 
     /**
@@ -111,9 +113,9 @@ contract FlightSuretyData {
         _;
     }
 
- /********************************************************************************************/
- /*                                       UTILITY FUNCTIONS                                  */
-/********************************************************************************************/
+    /********************************************************************************************/
+    /*                                       UTILITY FUNCTIONS                                  */
+    /********************************************************************************************/
 
 
     function isOperational() 
@@ -263,12 +265,10 @@ contract FlightSuretyData {
         return count_consensus;
     }
 
-    function getCurrentFlights() 
+    function getCurrentFlight() 
     external 
     view 
-    requireIsOperational 
-    requireCallers 
-    returns (bytes32[] memory ) {
+    returns (bytes32[] memory) {
         return cs_flights;
     }
 
