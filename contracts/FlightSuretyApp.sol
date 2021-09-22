@@ -16,7 +16,8 @@ contract FlightSuretyApp {
 
     event Response(bool success, bytes data);
     event ResponseSuccess(bool success);
-    event ResponseFlightRegistered(bytes32 key);
+    event ResponseFlightRegistered(bytes32 key, uint256 status);
+    
 
     uint256 constant MULTIPARTY_CONSENSUS = 4;
     uint256 constant MULTIPARTY_CONSENSUS_DIVISOR = 2;
@@ -171,26 +172,40 @@ contract FlightSuretyApp {
 
     function registerFlight 
     (
-        string calldata _flight, 
-        uint256 _departure 
+        string memory _flight, 
+        uint256 _departure
     ) 
     external 
     requireIsOperational 
      {
-        bytes32 key = getFlightKey(msg.sender, _flight, _departure);
-        emit ResponseFlightRegistered(key);
+        bytes32 key = getKey(msg.sender, _flight, _departure);
         //require(!flightSuretyData.isFlightRegistered(key), "This flight is already registered");
         flightSuretyData.registerFlight(key, msg.sender, _departure, _flight, STATUS_CODE_UNKNOWN);
 
-        emit ResponseFlightRegistered(key);
+        emit ResponseFlightRegistered(key, STATUS_CODE_UNKNOWN);
     }
 
 
-    function getFlightKey(address airline, string memory flight, uint256 timestamp) pure internal returns(bytes32) {
-        return keccak256(abi.encodePacked(airline, flight, timestamp));
+    function registerInsurance
+    (
+                                string memory flightname,
+                                address _flight,
+                                uint256 amount,
+                                uint256 _departure
+    )
+    external
+    requireIsOperational
+    {
+        bytes32 key = getKey(msg.sender, flightname, _departure);
+        flightSuretyData.registerInsurance(getKey(_flight, flightname, _departure ), key, msg.sender, _departure);
+
     }
 
-    
+    function getKey(address _address, string memory _data, uint256 timestamp) pure internal returns(bytes32) {
+        return keccak256(abi.encodePacked(_address, _data, timestamp));
+    }
+
+
 
 
 }

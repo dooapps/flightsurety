@@ -7,7 +7,6 @@ const Web3 = require("web3");
 
 contract("Flight Surety Tests", accounts => {
 
-
     var config;
     before('setup contract', async () => {
       config = await Test.Config(accounts);
@@ -17,6 +16,9 @@ contract("Flight Surety Tests", accounts => {
   /****************************************************************************************/
   /* Operations and Settings                                                              */
   /****************************************************************************************/
+
+
+
 
   it(`(multiparty) has correct initial isOperational() value`, async () => {
     let status = await config.flightSuretyData.isOperational.call();
@@ -185,24 +187,24 @@ contract("Flight Surety Tests", accounts => {
 
     it('Can register flight', async () => {
       //console.log(new Date().getTime());
-      await config.flightSuretyApp.registerFlight("0000", 1631834815695, {from: config.owner});
+      await config.flightSuretyApp.registerFlight("0050", 1631834815695, {from: config.owner});
+      await config.flightSuretyApp.registerFlight("0050", 1631834815695, {from: config.owner});
     });
 
-    // it('Current flight', async () => {
 
+    it('Current flight', async () => { 
+      res = await config.flightSuretyData.getCurrentFlight();
+      for (let i = 0; i < res.length; i++) {
+        console.log(res[i]);
+        ref = await config.flightSuretyData.getFlightInfo.call(res[i]);
+        console.log(ref);
+        for (let x = 0; x < ref.length; x++) {
+          console.log(ref['airline']);
+        }
+          ;
+      } 
       
-    //   res = await config.flightSuretyData.getCurrentFlight();
-    //   for (let i = 0; i < res.length; i++) {
-    //     console.log(res[i]);
-    //     ref = await config.flightSuretyData.getFlightInfo.call(res[i]);
-    //     console.log(ref);
-    //     for (let x = 0; x < ref.length; x++) {
-    //       console.log(ref['airline']);
-    //     }
-    //       ;
-    //   } 
-      
-    // });
+    });
 
 
 

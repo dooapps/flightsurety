@@ -15,6 +15,9 @@ contract FlightSuretyData {
     uint256 count_airlines;
     uint256 count_consensus;
     uint256 count_funded;
+    uint256 passenger;
+
+
     Flight[] private lst_flights;
     uint256 public constant fee = 1 ether;
        
@@ -30,7 +33,7 @@ contract FlightSuretyData {
     struct Flight {
         string flight;
         bool is_flight_registered;
-        uint8 status_code;
+        uint8 status;
         uint256 departure;        
         address airline;
     }
@@ -46,7 +49,10 @@ contract FlightSuretyData {
     mapping(address => address[]) private consensus_airlines;
     mapping(address => address[]) private flights_airlines;
     mapping(bytes32 => Flight) private flights;
+    mapping(bytes32 => Insurance) private manifest;
     mapping(bytes32 => uint) flight_key;
+    mapping(bytes32 => address[]) private passengers;
+
     
 
     /**
@@ -87,7 +93,7 @@ contract FlightSuretyData {
     }
 
     /// @dev Modifier that requires the "ContractOwner" account to be the function caller
-    modifier requireOwner(){
+    modifier requireOwner(){   
         require(msg.sender == owner, 
         "Caller of FlightSuretyData is not contract owner");
         _;
@@ -114,18 +120,6 @@ contract FlightSuretyData {
         _;
     }
 
-        /**
-    * @dev Modifier that requires the "owner" account to be the function caller
-    */
-    modifier requireFlightRegistered
-    ( 
-        bytes32 _key 
-    )
-    {
-        require(flights[_key].is_flight_registered, 
-        "Flight is registered");
-        _;
-    }
 
 
     /********************************************************************************************/
@@ -157,6 +151,16 @@ contract FlightSuretyData {
         return airlines[_airline].is_registered;
     }
     
+
+    function isRegisteredFlight
+    (      
+        bytes32 key
+    ) 
+    public 
+    view 
+    returns(bool){
+        return (flights[key].is_flight_registered);
+    }
 
 
     
@@ -234,7 +238,7 @@ contract FlightSuretyData {
         address _airline, 
         uint256 _departure,  
         string calldata _flight,
-        uint8 _status_code
+        uint8 _status
     ) 
     external 
     requireIsOperational 
@@ -245,7 +249,7 @@ contract FlightSuretyData {
         flights[_key].airline = _airline;
         flights[_key].is_flight_registered = true;
         flights[_key].departure = _departure;
-        flights[_key].status_code = _status_code;
+        flights[_key].status = _status;
 
         lst_flights.push(flights[_key]);
         
@@ -282,6 +286,8 @@ contract FlightSuretyData {
         return(cs_flights);
     }
 
+
+
     function getFlightInfo
     (
         bytes32 _key
@@ -293,9 +299,44 @@ contract FlightSuretyData {
     (
         Flight memory
     ) 
-        {
+    {
         return(flights[_key]);
-        }
+    }
+
+
+
+    function updateFlightStatus     
+                            (
+                                bytes32 _key,
+                                uint8 _status
+                            )
+                            public
+                            requireIsOperational
+      
+    {
+       flights[_key].status = _status;
+    }   
+
+
+    function registerInsurance
+                            (
+                                bytes32 _flight,
+                                bytes32 _key,
+                                address _passenger,
+                                uint256 amount
+                            )
+                            external
+                            payable
+                            returns(bool)
+    {
+        manifest[_key].amount    = amount;
+        manifest[_key].passenger = _passenger;
+        manifest[_key].activate  = true;
+
+        passengers[_flight].push(_passenger);
+        return(true);
+    }
+
 
 
 
