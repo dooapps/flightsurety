@@ -19,7 +19,7 @@ contract('Oracles', async (accounts) => {
   });
 
 
-  it('can register oracles', async () => {
+  it('(oracle) it allows to register oracles', async () => {
     
     const fee = await config.flightSuretyApp.REGISTRATION_FEE.call();
 
@@ -32,9 +32,8 @@ contract('Oracles', async (accounts) => {
 
   it('can request flight status', async () => {
     
-    // ARRANGE
-    let flight = 'ND1309'; // Course number
-    let timestamp = "2019-06-15";
+    let flight = '0050'; // Course number
+    let timestamp = new Date().getTime();
 
     // Submit a request for oracles to get status information for a flight
     await config.flightSuretyApp.fetchFlightStatus(config.firstAirline, flight, timestamp);
@@ -65,7 +64,6 @@ contract('Oracles', async (accounts) => {
 
 
   });
-
 
  
 });
