@@ -7,6 +7,11 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 contract FlightSuretyData {
     using SafeMath for uint256;
 
+    // events
+    event ResponseAuthorizedContract(address _contract);
+    event ResponseOwnerRequire(address _contract, address _sender);
+
+
 
     address private owner;                                      // Account used to deploy contract
     bool private operational = true;                            // Blocks all state changes throughout the contract if false
@@ -28,6 +33,8 @@ contract FlightSuretyData {
         bool is_registered;
         bool is_funded;
     }
+
+
 
 
     struct Flight {
@@ -178,6 +185,7 @@ contract FlightSuretyData {
     external 
     requireOwner {
         callers[_address] = true;
+        emit ResponseAuthorizedContract(_address);
     }
 
     function setOperatingStatus
@@ -188,6 +196,7 @@ contract FlightSuretyData {
                             requireOwner 
     {
         operational = mode;
+        emit ResponseOwnerRequire(owner, msg.sender);
     }
 
 
@@ -237,7 +246,7 @@ contract FlightSuretyData {
         bytes32 _key, 
         address _airline, 
         uint256 _departure,  
-        string calldata _flight,
+        //string calldata _flight,
         uint8 _status
     ) 
     external 
@@ -338,7 +347,41 @@ contract FlightSuretyData {
     }
 
 
+    function getInsuranceAmount
+                            (
+                                bytes32 _key
+                            )
+                            external
+                            requireIsOperational
+                            returns
+                            (
+                                uint256
+                            ) 
+                            {
+                                return(manifest[_key].amount);
+                            }
 
+
+    function creditInsurees
+                                (
+                                bytes32 _flight,
+                                bytes32 _key,
+                                uint256 amount
+                                )
+                                external
+    {
+        require(address(this).balance >= amount, "No enough funds available on contract to pay the insuree");
+        for (uint i = 0; i < passengers[_flight].length; i++) {
+            if (manifest[_key].activate == true) {
+                manifest[_key].amount = manifest[_key].amount.mul(amount).div(100);
+            }
+        }
+    }
+
+
+
+   
+    // endregion
 
 
 }

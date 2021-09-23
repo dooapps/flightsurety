@@ -1,6 +1,6 @@
 var FlightSuretyApp  = artifacts.require("FlightSuretyApp");
 var FlightSuretyData = artifacts.require("FlightSuretyData");
-var Airline          = artifacts.require("oracle/Airline");
+
 
 
 var BigNumber = require('bignumber.js');
@@ -24,15 +24,8 @@ var Config = async function(accounts) {
 
     let owner = accounts[0];
     let firstAirline = accounts[1];
-
-    let airlineData      = await Airline.new();
     
-    //console.log(airlineData.address);
-
     let flightSuretyData = await FlightSuretyData.new();
-
-    //console.log(airlineData.address);
-
     let flightSuretyApp  = await FlightSuretyApp.new(flightSuretyData.address);
     
 
@@ -43,8 +36,7 @@ var Config = async function(accounts) {
         weiMultiple: (new BigNumber(10)).pow(18),
         testAddresses: testAddresses,
         flightSuretyData: flightSuretyData,
-        flightSuretyApp: flightSuretyApp,
-        airline: airlineData
+        flightSuretyApp: flightSuretyApp
     }
 }
 
