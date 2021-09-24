@@ -3,199 +3,232 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" > -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>FlightSurety</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 <body>
 
-    <nav class="navbar navbar-inverse navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand left-20" href="#">FlightSurety</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
-            aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">FlightSurety</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="container-fluid">
-            <ul class="nav navbar-nav">
-                <li><a class="nav-link" href="#airlines">Airlines</a></li>
-                <li><a class="nav-link" href="#insurance">Insurances</a></li>
-                <li><a class="nav-link" href="#admin">Admin</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a class="nav-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                        </svg>
-                        <span id="currentUser">Current user</span>
-                    </a>
-                </li>                
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active" id="contract-resource">
+                    <a class="nav-link" href="#">Contract <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item" id="airlines-resource">
+                    <a class="nav-link" href="#">Airlines</a>
+                </li>
+                <li class="nav-item" id="flights-resource">
+                    <a class="nav-link" href="#">Flights</a>
+                </li>
+                <li class="nav-item" id="insurances-resource">
+                    <a class="nav-link" href="#">Insurances</a>
+                </li>
+                <li class="nav-item" id="funds-resource">
+                    <a class="nav-link" href="#">Fund</a>
+                </li>
             </ul>
         </div>
     </nav>
 
-    <main>
-        <div class="row top-20" id="airlines">
-            <div class="col-10 container">
-                <h1>Airlines</h1>
-                    <h4>Match airline name with current user address (required to select flights)</h4>
-                        <form>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    Assign airline name to current address
-                                </div>
-                                <div class="col-4">
-                                    <select class="form-select" id="airlinesNamesMenu"></select>                            
-                                </div>
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-primary" id="btnAirlineAssignName">Assign</button>
-                                </div>                                              
-                            </div>
-                        </form>
-                    <h4>Overview of airlines status</h4>
-                        <button type="button" class="btn btn-primary" id="btnAirlineStatusRefresh">Refresh status</button>
-                        <table class="table white-font">
-                            <thead>
-                              <tr>
-                                <th scope="col">Address</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">IATA</th>
-                                <th scope="col">Status</th>
-                              </tr>
-                            </thead>
-                            <tbody id="tableAirlinesStatus"></tbody>
-                        </table>
-                    <h4>Register an airline</h4>
-                        <form>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    Enter address of airline to register
-                                </div>
-                                <div class="col-4">
-                                    <input type="text" class="form-control" placeholder="Enter airline address" id="airlineAddressToRegister"></select>                            
-                                </div>
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-primary" id="btnAirlineRegister">Register</button>
-                                </div>                                              
-                            </div>
-                        </form>
-                    <h4>Fund an airline</h4>
-                        <form>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    Enter amount of funding for current user (in ETH)
-                                </div>
-                                <div class="col-4">
-                                    <input type="number" class="form-control" placeholder="1" id="airlineAmountToFund"></input>                            
-                                </div>
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-primary" id="btnAirlineFund">Fund</button>
-                                </div>                                              
-                            </div>
-                        </form>
+    <!--CONTENT AREA-->
+    <div class="container results fixed-top" id="content-area">
+        <div class="row">
+            <div class="col-12">
+                <h3>Results</h3>
+                <div id="display-wrapper" class="top-20"></div>
             </div>
         </div>
+    </div>
 
-        <div class="row top-20" id="insurance">
-            <div class="col-10 container">
-                <h1>Insurances</h1>
-                    <h4>Purchase insurance</h4>
-                        <form>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    Select (funded) airline to purchase flight insurance on
-                                </div>
-                                <div class="col-6">
-                                    <select class="form-select" id="insuranceAirlinesMenu" placeholder="Select airline"></select>                            
-                                </div>                                                                      
-                            </div>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    Select flight to insure
-                                </div>
-                                <div class="col-6">
-                                    <select class="form-select" id="insuranceFlightsMenu"></select>                            
-                                </div>                                                                      
-                            </div>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    Enter amount insured for current user (in ETH, max 1 ETH)
-                                </div>
-                                <div class="col-4">
-                                    <input type="text" class="form-control" id="insuranceAmount"></input>                            
-                                </div>
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-primary" id="btnInsuranceBuy">Buy</button>
-                                </div>                                              
-                            </div>
-                        </form>
-                    <h4>Redeem insurance</h4>
-                        <form>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    Select active insurance of current user
-                                </div>
-                                <div class="col-6">
-                                    <select class="form-select" id="insurancePurchasedMenu"></select>                            
-                                </div>
-                                                                                                
-                            </div>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-primary" id="insuranceCheckFlightStatus">
-                                        Check flight status
-                                        <span class="spinner-border spinner-border-sm" id="spinnerStatus" role="status" aria-hidden="true"></span>                                         
-                                    </button> 
-                                </div>                                
-                                <div class="col-6">
-                                    <input type="text" class="form-control" id="flightStatus" readonly></input>                                     
-                                </div>
-                            </div>
-                            <div class="row top-20 bottom-20">
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-primary" id="btnUserCredit">Check user credit</button>                                
-                                </div>
-                                <div class="col-4">
-                                    <input type="text" class="form-control" id="creditAmount" readonly></input> 
-                                    <!-- <ul class="list-group">
-                                        <li class="list-group-item" id="creditAmount">0</li>
-                                    </ul> -->
-                                </div>
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-primary" id="btnWithdraw">Withdraw</button>
-                                </div>                                              
-                            </div>
-                        </form>    
-            </div>
-        </div>
-
-        <div class="row top-20" id="admin">
-            <div class="col-10 container" id="sub-tmp">
-                <h1>Admin</h1>
+    <div class="container-form ">
+        <!--CONTRACT-->
+        <div class="container " id="contract-resource-forms" style="display: block">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Contract</h1>
+                    <h3>Operational Status</h3>
                     <form>
-                        <div class="row top-20 bottom-20">
-                            <div class="col-3">
-                                <button type="button" class="btn btn-primary" id="btnCheckStatus">Check contracts status</button>
-                            </div>
+                        <div class="form-group">
+                            <label class="form">Message Sender</label>
+                            <input type="text" class="form-control" id="operational-status-get-from"
+                                placeholder="Enter address of the message sender, if empty, then contract owner will be used">
                         </div>
-                        <div class="row top-20 bottom-20">
-                            <div class="col-3">
-                                FlightSuretyApp is operational
-                            </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" id="flightSuretyAppStatus" readonly></input>               
-                            </div>                                                                                            
-                        </div>                                            
-                    </form>    
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="operational-status-get" value="Get Status">
+                        </div>
+
+                    </form>
+                </div>
             </div>
         </div>
-        
-    </main>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script> -->
+        <!--AIRLINES-->
+        <div class="container " id="airlines-resource-forms" style="display: none">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Airlines</h1>
+                    <h3>Register Airline</h3>
+                    <form>
+                        <div class="form-group">
+                            <label class="form">Airline Address</label>
+                            <input type="text" class="form-control" id="airline-address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form">Message Sender</label>
+                            <input type="text" class="form-control" id="airline-register-from"
+                                placeholder="Enter address of the message sender, if empty, then contract owner will be used">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="airline-register" value="Register Airline">
+                            <input type="button" class="btn btn-primary" id="airline-get" value="Get Airlane">
+                        </div>
+                    </form>
+                    <h3>Vote Airline to operate</h3>
+                    <form>
+                        <div class="form-group">
+                            <label class="form">Airline Address</label>
+                            <input type="text" class="form-control" id="airline-candidate-address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form">Message Sender</label>
+                            <input type="text" class="form-control" id="airline-candidate-register-from"
+                                placeholder="Enter address of the message sender, if empty, then contract owner will be used">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="airline-candidate" value="Vote Airline">
+                        </div>
+                    </form>
+                    <h3>Deposit Fund To Operate</h3>
+                    <form>
+                        <div class="form-group">
+                            <label class="form">Airline Address</label>
+                            <input type="text" class="form-control" id="airline-fund-address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form">Message Sender</label>
+                            <input type="text" class="form-control" id="airline-fund-value"
+                                placeholder="Enter the fund value, minimum accepted is 10 ether">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="airline-fund" value="Deposit">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--FLIGHTS-->
+        <div class="container " id="flights-resource-forms" style="display: none">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Flights</h1>
+                    <h3>Register Flight</h3>
+                    <form>
+                        <div class="form-group">
+                            <label class="form">Airline Address</label>
+                            <input type="text" class="form-control" id="register-flight-airline-address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form">Flight Code</label>
+                            <input type="text" class="form-control" id="register-flight-flight-code">
+                        </div>
+                        <div class="form-group">
+                            <label class="form">Departure Time</label>
+                            <input type="datetime-local" class="form-control" id="register-flight-departure">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="register-flight" value="Register Flight">
+                            <input type="button" class="btn btn-primary" id="get-flight-id" value="Get Flight Id">
+                            <input type="button" class="btn btn-primary" id="submit-oracle" value="Refresh">
+                        </div>
+                    </form>
+                    <h3>Get Flight</h3>
+                    <form>
+                        <div class="form-group">
+                            <label class="form">Flight Id</label>
+                            <input type="text" class="form-control" id="get-flight-flight-id">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="get-flight" value="Get Flight">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--INSURANCES-->
+        <div class="container " id="insurances-resource-forms" style="display: none">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Insurances</h1>
+                    <h3>Buy Insurance</h3>
+                    <form>
+                        <div class="form-group">
+                            <label class="form">Flight Id</label>
+                            <input type="text" class="form-control" id="buy-insurance-flight-code"
+                                placeholder="Flight Id (not flight code) for which you want to buy insurance">
+                        </div>
+                        <div class="form-group">
+                            <label class="form">Insurance Premium (Ether)</label>
+                            <input type="number" class="form-control" id="buy-insurance-paid-amount">
+                        </div>
+                        <div class="form-group">
+                            <label class="form">Message Sender (Passenger)</label>
+                            <input type="text" class="form-control" id="buy-insurance-from"
+                                placeholder="Enter address of the message sender, if empty, then contract owner will be used">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="buy-insurance" value="Buy">
+                        </div>
+                    </form>
+                    <h3>Get Insurance</h3>
+                    <form>
+                        <div class="form-group">
+                            <label class="form">Insurance Id</label>
+                            <input type="text" class="form-control" id="get-insurance-id">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="get-insurance" value="Get Insurance">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--Balance-->
+        <div class="container " id="funds-resource-forms" style="display: none">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Funds</h1>
+                    <h3>Withdrawal / Check Balance</h3>
+                    <form>
+                        <div class="form-group">
+                            <label class="form">Passenger Address</label>
+                            <input type="text" class="form-control" id="fund-credited-amount-passenger-address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form">Amount to Withdraw (Ether)</label>
+                            <input type="number" class="form-control" id="fund-credited-amount-amount">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary" id="get-credited-amount" value="Check Balance">
+                            <input type="button" class="btn btn-primary" id="withdraw-credited-amount" value="Withdrawal">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

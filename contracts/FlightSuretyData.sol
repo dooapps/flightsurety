@@ -216,6 +216,9 @@ contract FlightSuretyData {
 
         airlines[_airline].is_funded = true;
         callers[_airline] = true;
+
+        airlines_registered.push(_airline);
+        
         count_funded = count_funded.add(1); 
 
     }
@@ -265,10 +268,21 @@ contract FlightSuretyData {
         cs_flights.push(_key);
     }
 
+    function getAirlinesInfo
+    (
+        address airline
+    )
+    external
+    view
+    returns(address[] memory){
+        return airlines_registered;
+    }
+
+
     function getAirlines() 
     external 
     view
-    returns(uint256 count) {
+    returns(uint256) {
         return count_airlines;
     }
 

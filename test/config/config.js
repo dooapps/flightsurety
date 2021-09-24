@@ -36,7 +36,8 @@ var Config = async function(accounts) {
         weiMultiple: (new BigNumber(10)).pow(18),
         testAddresses: testAddresses,
         flightSuretyData: flightSuretyData,
-        flightSuretyApp: flightSuretyApp
+        flightSuretyApp: flightSuretyApp,
+        timestamp: new Date().getTime()
     }
 }
 

@@ -1,5 +1,5 @@
 var Test = require('./config/config.js');
-var BigNumber = require('bignumber.js');
+
 
 const Web3 = require("web3");
 
@@ -8,7 +8,6 @@ const Web3 = require("web3");
 contract("Flight Surety Tests", accounts => {
     //W (double check and validation)
     let config;
-    let timestamp = new Date().getTime();
     before('setup contract', async () => {
       config = await Test.Config(accounts);
       await config.flightSuretyData.authorizeCaller(config.flightSuretyData.address, {from: config.owner});
@@ -167,9 +166,23 @@ contract("Flight Surety Tests", accounts => {
     assert.equal(resultnewAirline5, true,  "The 5th airline should be accepted after getting 2 votes out of 4");
     });
 
+
+    it('(airline) it allows to get Airlines Info', async () => { 
+      res = await config.flightSuretyData.getAirlinesInfo(config.firstAirline);
+      console.log("airlines registered: " + res);
+       for (let i = 0; i < res.length; i++) {
+        console.log(res[i]);
+      //   ref = await config.flightSuretyData.getFlightInfo.call(res[i]);
+      //   console.log(ref);
+      //   for (let x = 0; x < ref.length; x++) {
+      //     console.log(ref['airline']);
+      //   }
+      //     ;
+       }
+    });
     
     it('(flight) it allows to register a flight', async () => {
-      await config.flightSuretyApp.registerFlight("0050", timestamp, {from: config.owner});
+      await config.flightSuretyApp.registerFlight("0050", config.timestamp, {from: config.owner});
     });
 
 
@@ -189,8 +202,8 @@ contract("Flight Surety Tests", accounts => {
     });
 
     it('(insurance) it allows to passengers may pay up to 1 ether for purchasing flight insurance.', async()=>{
-        let passenger1 = accounts[8];
-        let passenger2 = accounts[9];
+      let passenger1 = accounts[8];
+      let passenger2 = accounts[9];
     
         let value1 = web3.utils.toWei('2', "ether");
         let value2 = web3.utils.toWei('.1', "ether");
@@ -201,7 +214,7 @@ contract("Flight Surety Tests", accounts => {
         try {
           let balanceBeforePasseger1 = await web3.eth.getBalance(passenger1);
           console.log(web3.utils.toWei(balanceBeforePasseger1, "ether"));
-            await config.flightSuretyApp.registerInsurance("0050", config.owner, timestamp,  {from: passenger1, value: value1});
+            await config.flightSuretyApp.registerInsurance("0050", config.owner, config.timestamp,  {from: passenger1, value: value1});
             await config.flightSuretyApp.send(passenger1, {from: passenger1, value: value1});
             let balanceAfterPasseger1 = await web3.eth.getBalance(passenger1);
             console.log(balanceAfterPasseger1);
@@ -211,7 +224,7 @@ contract("Flight Surety Tests", accounts => {
         }
     
         try {
-            await config.flightSuretyApp.registerInsurance("0050", config.owner, timestamp, {from: passenger2, value: value2});
+            await config.flightSuretyApp.registerInsurance("0050", config.owner, config.timestamp, {from: passenger2, value: value2});
             await config.flightSuretyApp.send(passenger2, {from: passenger2, value: value2});
         }
         catch(e) {
