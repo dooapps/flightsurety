@@ -64,7 +64,7 @@ contract FlightSuretyApp {
         
     }
 
-    function send
+    function pay
     (
         address payable _to
     )
@@ -260,82 +260,70 @@ contract FlightSuretyApp {
                         external
     {
         uint8 index = getRandomIndex(msg.sender);
-
-        // Generate a unique key for storing the request
-        bytes32 key = keccak256(abi.encodePacked(index, airline, flight, timestamp));
+       
+        ResponseInfo storage flightResponse = 
+        oracleResponses[keccak256(abi.encodePacked(index, airline, flight, timestamp))];
         
-        ResponseInfo storage flightResponse = oracleResponses[key];
-        
-        flightResponse.isOpen = true;
+        flightResponse.is_open = true;
         flightResponse.requester = msg.sender;    
 
         emit OracleRequest(index, airline, flight, timestamp);
     }
 
-
-    // Incremented to add pseudo-randomness at various points
     uint8 private nonce = 0;
 
-    // Fee to be paid when registering oracle
     uint256 public constant REGISTRATION_FEE = 1 ether;
 
-    // Number of oracles that must respond for valid status
     uint256 private constant MIN_RESPONSES = 3;
 
     struct Oracle {
-        bool isRegistered;
+        bool is_registered;
         uint8[3] indexes;
     }
 
-    // Track all registered oracles
-    mapping(address => Oracle) private oracles;
-
-    // Model for responses from oracles
     struct ResponseInfo {
-        address requester; // Account that requested status
-        bool isOpen; // If open, oracle responses are accepted
-        mapping(uint8 => address[]) responses; // Mapping key is the status code reported
-        // This lets us group responses and identify
-        // the response that majority of the oracles
+        address requester;
+        bool is_open; 
+        mapping(uint8 => address[]) responses; 
     }
 
-    // Track all oracle responses
-    // Key = hash(index, flight, departureTime)
+    mapping(address => Oracle) private oracles;
     mapping(bytes32 => ResponseInfo) private oracleResponses;
 
-    // Event fired each time an oracle submits a response
     event FlightStatusInfo(
         address airline,
         string flight,
-        uint256 departureTime,
+        uint256 departure,
         uint8 status
     );
 
     event OracleReport(
         address airline,
         string flight,
-        uint256 departureTime,
+        uint256 departure,
         uint8 status
     );
 
-    // Event fired when flight status request is submitted
-    // Oracles track this and if they have a matching index
-    // they fetch data and submit a response
     event OracleRequest(
         uint8 index,
         address airline,
         string flight,
-        uint256 departureTime
+        uint256 departure
+    );
+
+
+    event OracleRegistered(
+        uint8[3] indexes
     );
 
     // Register an oracle with the contract
     function registerOracle() external payable requireIsOperational {
-        // Require registration fee
+
         require(msg.value >= REGISTRATION_FEE, "Registration fee is required");
 
         uint8[3] memory indexes = generateIndexes(msg.sender);
 
-        oracles[msg.sender] = Oracle({isRegistered: true, indexes: indexes});
+        oracles[msg.sender] = Oracle({is_registered: true, indexes: indexes});
     }
 
     function isOracleRegistered(address oracleAddress)
@@ -344,7 +332,7 @@ contract FlightSuretyApp {
         requireIsOperational
         returns (bool)
     {
-        return oracles[oracleAddress].isRegistered;
+        return oracles[oracleAddress].is_registered;
     }
 
     function getOracleRegistrationFee() 
@@ -361,23 +349,19 @@ contract FlightSuretyApp {
         requireIsOperational 
         returns (uint8[3] memory) {
         require(
-            oracles[msg.sender].isRegistered,
+            oracles[msg.sender].is_registered,
             "Not registered as an oracle"
         );
 
         return oracles[msg.sender].indexes;
     }
 
-    // Called by oracle when a response is available to an outstanding request
-    // For the response to be accepted, there must be a pending request that is open
-    // and matches one of the three Indexes randomly assigned to the oracle at the
-    // time of registration (i.e. uninvited oracles are not welcome)
     function submitOracleResponse(
         uint8 index,
         address airline,
         string calldata flight,
-        uint256 departureTime,
-        uint8 statusCode
+        uint256 departure,
+        uint8 status
     ) external requireIsOperational {
         require(
             (oracles[msg.sender].indexes[0] == index) ||
@@ -387,23 +371,19 @@ contract FlightSuretyApp {
         );
 
         bytes32 key =
-            keccak256(abi.encodePacked(index, airline, flight, departureTime));
+            keccak256(abi.encodePacked(index, airline, flight, departure));
         require(
-            oracleResponses[key].isOpen,
+            oracleResponses[key].is_open,
             "Flight or departureTime do not match oracle request"
         );
 
-        oracleResponses[key].responses[statusCode].push(msg.sender);
+        oracleResponses[key].responses[status].push(msg.sender);
 
-        // Information isn't considered verified until at least MIN_RESPONSES
-        // oracles respond with the *** same *** information
-        emit OracleReport(airline, flight, departureTime, statusCode);
+        emit OracleReport(airline, flight, departure, status);
         if (
-            oracleResponses[key].responses[statusCode].length >= MIN_RESPONSES
+            oracleResponses[key].responses[status].length >= MIN_RESPONSES
         ) {
 
-            // Handle flight status as appropriate
-            //processFlightStatus(airline, flight, departureTime, statusCode);
         }
     }
 
@@ -433,7 +413,7 @@ contract FlightSuretyApp {
 
     // Returns array of three non-duplicating integers from 0-9
     function getRandomIndex(address account) internal returns (uint8) {
-        uint8 maxValue = 10;
+        uint8 max = 10;
 
         // Pseudo random number...the incrementing nonce adds variation
         uint8 random =
@@ -445,11 +425,11 @@ contract FlightSuretyApp {
                             account
                         )
                     )
-                ) % maxValue
+                ) % max
             );
 
         if (nonce > 250) {
-            nonce = 0; // Can only fetch blockhashes for last 256 blocks so we adapt
+            nonce = 0; 
         }
 
         return random;

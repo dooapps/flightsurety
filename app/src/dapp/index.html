@@ -5,8 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>FlightSurety</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
@@ -14,220 +13,80 @@
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#">FlightSurety</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
-            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+            aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active" id="contract-resource">
-                    <a class="nav-link" href="#">Contract <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item" id="airlines-resource">
-                    <a class="nav-link" href="#">Airlines</a>
-                </li>
-                <li class="nav-item" id="flights-resource">
-                    <a class="nav-link" href="#">Flights</a>
-                </li>
-                <li class="nav-item" id="insurances-resource">
-                    <a class="nav-link" href="#">Insurances</a>
-                </li>
-                <li class="nav-item" id="funds-resource">
-                    <a class="nav-link" href="#">Fund</a>
-                </li>
-            </ul>
-        </div>
     </nav>
 
-    <!--CONTENT AREA-->
-    <div class="container results fixed-top" id="content-area">
-        <div class="row">
-            <div class="col-12">
-                <h3>Results</h3>
-                <div id="display-wrapper" class="top-20"></div>
-            </div>
+    <main class="container">
+        <h2>Airline Registration</h2>       
+        
+        <div>
+            First Register airline : 
+            <span id="firstRegisteredAirlineAddress"></span>        
+            <button id="payAirline">Pay Airline</button>
+        </div>         
+        <br/>   
+        <br/>           
+        <div>
+            <input id="airlineName1" value="airline1"/> 
+            <input id="airlineAddress1" value="0x1eC9603491b86aF1E311DeD20D9a188f39eFCfF3" style="width:400px;" />
+            <button id="registerAirlineBtn1" data-index="1">Register</button>
         </div>
-    </div>
-
-    <div class="container-form ">
-        <!--CONTRACT-->
-        <div class="container " id="contract-resource-forms" style="display: block">
-            <div class="row">
-                <div class="col-12">
-                    <h1>Contract</h1>
-                    <h3>Operational Status</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Message Sender</label>
-                            <input type="text" class="form-control" id="operational-status-get-from"
-                                placeholder="Enter address of the message sender, if empty, then contract owner will be used">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="operational-status-get" value="Get Status">
-                        </div>
-
-                    </form>
-                </div>
-            </div>
+        <div>
+            <input id="airlineName2" value="airline2"/> 
+            <input id="airlineAddress2" value="0xB5e0F4a1251b5bB44708Ca959328a563375B6B08"  style="width:400px;" />
+            <button id="registerAirlineBtn2">Register</button>
         </div>
-
-        <!--AIRLINES-->
-        <div class="container " id="airlines-resource-forms" style="display: none">
-            <div class="row">
-                <div class="col-12">
-                    <h1>Airlines</h1>
-                    <h3>Register Airline</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Airline Address</label>
-                            <input type="text" class="form-control" id="airline-address">
-                        </div>
-                        <div class="form-group">
-                            <label class="form">Message Sender</label>
-                            <input type="text" class="form-control" id="airline-register-from"
-                                placeholder="Enter address of the message sender, if empty, then contract owner will be used">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="airline-register" value="Register Airline">
-                            <input type="button" class="btn btn-primary" id="airline-get" value="Get Airlane">
-                        </div>
-                    </form>
-                    <h3>Vote Airline to operate</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Airline Address</label>
-                            <input type="text" class="form-control" id="airline-candidate-address">
-                        </div>
-                        <div class="form-group">
-                            <label class="form">Message Sender</label>
-                            <input type="text" class="form-control" id="airline-candidate-register-from"
-                                placeholder="Enter address of the message sender, if empty, then contract owner will be used">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="airline-candidate" value="Vote Airline">
-                        </div>
-                    </form>
-                    <h3>Deposit Fund To Operate</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Airline Address</label>
-                            <input type="text" class="form-control" id="airline-fund-address">
-                        </div>
-                        <div class="form-group">
-                            <label class="form">Message Sender</label>
-                            <input type="text" class="form-control" id="airline-fund-value"
-                                placeholder="Enter the fund value, minimum accepted is 10 ether">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="airline-fund" value="Deposit">
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div>
+            <input id="airlineName3" value="airline3"/> 
+            <input id="airlineAddress3" value="0xa8e0C3C809f565b2924e85Ae4726e9d825F8151f"  style="width:400px;" />
+            <button id="registerAirlineBtn3">Register</button>
         </div>
-
-        <!--FLIGHTS-->
-        <div class="container " id="flights-resource-forms" style="display: none">
-            <div class="row">
-                <div class="col-12">
-                    <h1>Flights</h1>
-                    <h3>Register Flight</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Airline Address</label>
-                            <input type="text" class="form-control" id="register-flight-airline-address">
-                        </div>
-                        <div class="form-group">
-                            <label class="form">Flight Code</label>
-                            <input type="text" class="form-control" id="register-flight-flight-code">
-                        </div>
-                        <div class="form-group">
-                            <label class="form">Departure Time</label>
-                            <input type="datetime-local" class="form-control" id="register-flight-departure">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="register-flight" value="Register Flight">
-                            <input type="button" class="btn btn-primary" id="get-flight-id" value="Get Flight Id">
-                            <input type="button" class="btn btn-primary" id="submit-oracle" value="Refresh">
-                        </div>
-                    </form>
-                    <h3>Get Flight</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Flight Id</label>
-                            <input type="text" class="form-control" id="get-flight-flight-id">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="get-flight" value="Get Flight">
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div>
+            <input id="airlineName4" value="airline4"/> 
+            <input id="airlineAddress4" value="0x542D9570752Cb6D321327b88f4DEc13ae66863dc"  style="width:400px;" />
+            <button id="registerAirlineBtn4">Register</button>
         </div>
-
-        <!--INSURANCES-->
-        <div class="container " id="insurances-resource-forms" style="display: none">
-            <div class="row">
-                <div class="col-12">
-                    <h1>Insurances</h1>
-                    <h3>Buy Insurance</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Flight Id</label>
-                            <input type="text" class="form-control" id="buy-insurance-flight-code"
-                                placeholder="Flight Id (not flight code) for which you want to buy insurance">
-                        </div>
-                        <div class="form-group">
-                            <label class="form">Insurance Premium (Ether)</label>
-                            <input type="number" class="form-control" id="buy-insurance-paid-amount">
-                        </div>
-                        <div class="form-group">
-                            <label class="form">Message Sender (Passenger)</label>
-                            <input type="text" class="form-control" id="buy-insurance-from"
-                                placeholder="Enter address of the message sender, if empty, then contract owner will be used">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="buy-insurance" value="Buy">
-                        </div>
-                    </form>
-                    <h3>Get Insurance</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Insurance Id</label>
-                            <input type="text" class="form-control" id="get-insurance-id">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="get-insurance" value="Get Insurance">
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div>
+            <input id="airlineName5" value="airline5"/> 
+            <input id="airlineAddress5" value="0x115c27e6a42F2Ee309F68ef2142187054dD13131"  style="width:400px;" />
+            <button id="registerAirlineBtn5">Register (multi-sig consensus) </button>
         </div>
+       
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <h2>Register Flight</h2>       
+        <button id="registerFlightBtn">Register Flight</button>
 
-        <!--Balance-->
-        <div class="container " id="funds-resource-forms" style="display: none">
-            <div class="row">
-                <div class="col-12">
-                    <h1>Funds</h1>
-                    <h3>Withdrawal / Check Balance</h3>
-                    <form>
-                        <div class="form-group">
-                            <label class="form">Passenger Address</label>
-                            <input type="text" class="form-control" id="fund-credited-amount-passenger-address">
-                        </div>
-                        <div class="form-group">
-                            <label class="form">Amount to Withdraw (Ether)</label>
-                            <input type="number" class="form-control" id="fund-credited-amount-amount">
-                        </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" id="get-credited-amount" value="Check Balance">
-                            <input type="button" class="btn btn-primary" id="withdraw-credited-amount" value="Withdrawal">
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <h2>Purchase Insurance</h2>       
+        <button id="purchaseInsurancBtn">Purchase Insurance</button>
+
+
+
+
+
+        <div id="msg"></div>
+
+
+
+
+
+
+        <div id="display-wrapper" class="top-20">
         </div>
-    </div>
+        <div class="row top-20">
+            <label class="form">Flight</label> <input type="text" id="flight-number"> 
+            <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
+        </div>
+    </main>
 
 </body>
 

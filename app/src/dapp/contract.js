@@ -1,72 +1,138 @@
-
 import FlightSuretyApp from '../../../build/contracts/FlightSuretyApp.json';
 import FlightSuretyData from '../../../build/contracts/FlightSuretyData.json';
-
 import Config from './config.json';
+
+
+import Web3Util from "web3-utils";
 import Web3 from 'web3';
 
+
 export default class Contract {
-    constructor(network, callback) {
-        let config = Config[network];
-        
-        this.web3 = new Web3(new Web3.providers.HttpProvider(config.url));
-        this.flightSuretyData = new this.web3.eth.Contract(FlightSuretyData.abi, config.dataAddress);
-        this.flightSuretyApp = new this.web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
-        this.initialize(callback);
-        this.owner = null;
-        this.airlines = [];
-        this.passengers = [];
-        this.initialize(callback);
+  constructor(network, callback) {
+
+    this.AIRLINE_FEE   = Web3Util.toWei("10", "ether");
+    this.INSURANCE_FEE = Web3Util.toWei("1", "ether");
+    this.TIMESTAMP     = Math.floor(Date.now() / 1000);
+
+    this.config = Config[network];
+
+    console.log(this.config);
+
+    this.web3 = new Web3(new Web3.providers.HttpProvider(this.config.url));
+    this.flightSuretyApp = new this.web3.eth.Contract(FlightSuretyApp.abi, this.config.appAddress);
+    this.flightSuretyData = new this.web3.eth.Contract(FlightSuretyData.abi, this.config.dataAddress);
+
+
+    this.initialize(callback);
+    this.owner = null;
+    this.firstAirline = null;
+    this.airlines = [];
+    this.passengers = [];
+
+    this.flight = "0050";
+  }
+
+  initialize(callback) {
+    this.web3.eth.getAccounts((error, accts) => {
+      this.owner = accts[0];
+
+      let counter = 1;
+
+      while (this.airlines.length < 5) {
+        this.airlines.push(accts[counter++]);
+      }
+
+      while (this.passengers.length < 5) {
+        this.passengers.push(accts[counter++]);
+      }
+      callback();
+
+      this.flightSuretyData.methods
+        .authorizeCaller(this.config.appAddress);
+    });
+  }
+
+  isOperational(callback) {
+    let self = this;
+    self.flightSuretyData.methods
+         .isOperational()
+         .call({from: self.owner}, callback);
+  }
+
+  getAirlinesRegisteredFunded(callback) {
+    let self = this;
+    self.flightSuretyData.methods
+      .getAirlinesRegisteredFunded()
+      .call()
+      .then((value) => {
+        this.firstAirline = value[0];
+        callback(value[0]);
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  }
+
+  async registerAirline(name, address, callback) {
+    try {
+      let self = this;
+      var result = await self.flightSuretyApp.methods
+        .registerAirline(name, address)
+        .send({ from: this.firstAirline });
+      result = await self.flightSuretyData.methods
+        .isRegisteredAirline(address)
+        .call();
+      callback(result);
+    } catch (error) {
+      console.log(error);
     }
+  }
 
-    async initialize(callback) {
-        this.web3.eth.getAccounts((error, accounts) => {
+  payAirline(address, callback) {
+    let self = this;
+    console.log(this.firstAirline);
+    var result = self.flightSuretyApp.methods.pay(this.owner).call(this.owner, {value: this.AIRLINE_FEE})
+      .then(function (result) {
+        callback(result);
+      });
+  }
 
-            const _flights = [['3012','9355','6378'], 
-                              ['3587','5594','516'] , 
-                              ['7782','998','2283'], 
-                              ['8801','2662', '2093']];
-           
-            this.owner = accounts[0];
-            this.passenger = accounts[11];
+  async registerFlight(callback) {
+    let self = this;
+    var result = await self.flightSuretyApp.methods.registerFlight.send(
+      this.flight,
+      this.flightFrom,
+      this.flightTo,
+      this.TIMESTAMP,
+      { from: this.firstAirline }
+    );
+    callback(result);
+  }
 
-            let counter = 1;
+  async purchaseInsurance(callback) {
+    debugger;
+    let self = this;
+    var result = await self.flightSuretyApp.methods.purchaseInsurance.call(
+      this.firstAirline,
+      this.flight,
+      this.TIMESTAMP,
+      { from: this.passengers[0], value: this.INSURANCE_FEE }
+    );
+    callback(result);
+  }
 
-            console.log("Owner: " + this.owner);
-            console.log("Passenger: "+ this.passenger);
-            
-
-            console.log("Airlines: "+this.airlines);
-
-            try{
-                console.log("this.config.appAddress:   "+this.flightSuretyApp.address);
-
-            }catch(error){
-                console.log(error);
-            }
-
-            callback();
+  fetchFlightStatus(flight, callback) {
+    let self = this;
+    let payload = {
+        airline: self.airlines[0],
+        passenger: self.passengers[0],
+        flight: flight,
+        timestamp: Math.floor(Date.now() / 1000)
+    };
+    self.flightSuretyApp.methods
+        .fetchFlightStatus(payload.airline, payload.flight, payload.timestamp)
+        .send({from: payload.passenger}, (error, result) => {
+            callback(error, payload);
         });
-    }
-
-    isOperational(callback) {
-       let self = this;
-       self.flightSuretyData.methods
-            .isOperational()
-            .call({ from: self.owner}, callback);
-    }
-
-    fetchFlightStatus(flight, callback) {
-        let self = this;
-        let payload = {
-            airline: self.airlines[0],
-            flight: flight,
-            departe: Math.floor(Date.now() / 1000)
-        } 
-        self.flightSuretyApp.methods
-            .fetchFlightStatus(payload.airline, payload.flight, payload.timestamp)
-            .send({ from: self.owner}, (error, result) => {
-                callback(error, payload);
-            });
-    }
+  }
 }

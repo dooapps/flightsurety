@@ -11,7 +11,7 @@ contract("Flight Surety Tests", accounts => {
     before('setup contract', async () => {
       config = await Test.Config(accounts);
       await config.flightSuretyData.authorizeCaller(config.flightSuretyData.address, {from: config.owner});
-    });
+    }); 
 
   /****************************************************************************************/
   /* Operations and Settings                                                              */
@@ -144,9 +144,9 @@ contract("Flight Surety Tests", accounts => {
  
     const amount = Web3.utils.toWei('10', 'ether');
 
-    await config.flightSuretyApp.send(newAirline2, {from: newAirline2, value: amount});
-    await config.flightSuretyApp.send(newAirline3, {from: newAirline3, value: amount}); 
-    await config.flightSuretyApp.send(newAirline4, {from: newAirline4, value: amount}); 
+    await config.flightSuretyApp.pay(newAirline2, {from: newAirline2, value: amount});
+    await config.flightSuretyApp.pay(newAirline3, {from: newAirline3, value: amount}); 
+    await config.flightSuretyApp.pay(newAirline4, {from: newAirline4, value: amount}); 
 
     console.log("airlines number: " + await config.flightSuretyData.getAirlines());
     console.log("funded airlines: " + await config.flightSuretyData.getFunded());
@@ -215,7 +215,7 @@ contract("Flight Surety Tests", accounts => {
           let balanceBeforePasseger1 = await web3.eth.getBalance(passenger1);
           console.log(web3.utils.toWei(balanceBeforePasseger1, "ether"));
             await config.flightSuretyApp.registerInsurance("0050", config.owner, config.timestamp,  {from: passenger1, value: value1});
-            await config.flightSuretyApp.send(passenger1, {from: passenger1, value: value1});
+            await config.flightSuretyApp.pay(passenger1, {from: passenger1, value: value1});
             let balanceAfterPasseger1 = await web3.eth.getBalance(passenger1);
             console.log(balanceAfterPasseger1);
         }
@@ -225,7 +225,7 @@ contract("Flight Surety Tests", accounts => {
     
         try {
             await config.flightSuretyApp.registerInsurance("0050", config.owner, config.timestamp, {from: passenger2, value: value2});
-            await config.flightSuretyApp.send(passenger2, {from: passenger2, value: value2});
+            await config.flightSuretyApp.pay(passenger2, {from: passenger2, value: value2});
         }
         catch(e) {
             result2 = true;

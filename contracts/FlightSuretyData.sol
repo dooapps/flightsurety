@@ -16,6 +16,7 @@ contract FlightSuretyData {
     address private owner;                                      // Account used to deploy contract
     bool private operational = true;                            // Blocks all state changes throughout the contract if false
     address[] airlines_registered = new address[](0);
+    address[] airlines_registered_funded;
    
     uint256 count_airlines;
     uint256 count_consensus;
@@ -199,7 +200,10 @@ contract FlightSuretyData {
         emit ResponseOwnerRequire(owner, msg.sender);
     }
 
-
+    function getAirlinesRegisteredFunded() external view returns(address[] memory) 
+    {
+        return airlines_registered_funded;
+    }
 
    /**
     * @dev Initial funding for the insurance. Unless there are too many delayed flights
@@ -218,6 +222,7 @@ contract FlightSuretyData {
         callers[_airline] = true;
 
         airlines_registered.push(_airline);
+        airlines_registered_funded.push(_airline); 
         
         count_funded = count_funded.add(1); 
 
