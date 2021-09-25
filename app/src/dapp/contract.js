@@ -109,10 +109,10 @@ export default class Contract {
     callback(result);
   }
 
-  async purchaseInsurance(callback) {
+  async registerInsurance(callback) {
     debugger;
     let self = this;
-    var result = await self.flightSuretyApp.methods.purchaseInsurance.call(
+    var result = await self.flightSuretyApp.methods.registerInsurance.call(
       this.firstAirline,
       this.flight,
       this.TIMESTAMP,

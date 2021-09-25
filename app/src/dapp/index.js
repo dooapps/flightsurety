@@ -110,7 +110,7 @@ import "./flightsurety.css";
       });
 
       DOM.elid("purchaseInsurancBtn").addEventListener("click", () => {        
-        contract.purchaseInsurance((response) => {   
+        contract.registerInsurance((response) => {   
           debugger;         
           displayMessage("insurance purchased" + response);          
         });
