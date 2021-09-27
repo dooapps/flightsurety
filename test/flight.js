@@ -237,21 +237,4 @@ contract("Flight Surety Tests", accounts => {
     });
 
 
-
-  //   it('Passengers can see their insurance', async() =>{
-  //     let passenger1 = accounts[8];
-  //     let passenger2 = accounts[9];
-
-  //       let ins = await config.flightSuretyApp.getInsuranceInfo.call("0050", config.owner, 1631834815695, {from: passenger1});
-  //         console.log(ins[0]);
-  //         console.log(ins[1]);
-  //   });
-
-  // // it("should send payment correctly", async () => {
-  // //   // send coins from account 1 to 2
-  // //   const amount = Web3.utils.toWei('10', 'ether');
-  // //   await config.flightSuretyApp.send(accounts[3], { from: accounts[1], value: amount });
-  // // });
-
-
 });

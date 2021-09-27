@@ -24,12 +24,15 @@
         
         <div>
             First Register airline : 
-            <span id="firstRegisteredAirlineAddress"></span>        
+            <span id="firstRegisteredAirline"></span>    
             <button id="payAirline">Pay Airline</button>
         </div>         
         <br/>   
         <br/>           
         <div>
+            <div>
+                <span id="countAirlines">Número de Airlines</span> 
+            </div>
             <input id="airlineName1" value="airline1"/> 
             <input id="airlineAddress1" value="0x1eC9603491b86aF1E311DeD20D9a188f39eFCfF3" style="width:400px;" />
             <button id="registerAirlineBtn1" data-index="1">Register</button>
@@ -55,19 +58,53 @@
             <button id="registerAirlineBtn5">Register (multi-sig consensus) </button>
         </div>
        
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+
         <h2>Register Flight</h2>       
         <button id="registerFlightBtn">Register Flight</button>
 
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+
         <h2>Purchase Insurance</h2>       
         <button id="purchaseInsurancBtn">Purchase Insurance</button>
+        <!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>FlightSurety</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">FlightSurety</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+
+    <main class="container">
+        
+        <div >
+            <div class="row top-20">
+                <label class="form" for="flights">Purchase Insurance for 1 ether</label> 
+                
+                <div>
+                    <input type="number" name="amount" id="flight-insurance-amount" placeholder="1 ether" value="1">ether
+                </div>
+            <btn class="btn btn-primary" id="buy-insurance">Buy Insurance</btn>
+        </div>
+
+        <div id="display-wrapper" class="top-20">
+        </div>
+    </main>
+
+</body>
+
+</html>
 
 
 

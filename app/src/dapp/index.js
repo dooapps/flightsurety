@@ -7,7 +7,12 @@ import "./flightsurety.css";
   let firstAirlineAddress = null;
 
   let contract = new Contract("localhost", () => {
-    // Read transaction
+    
+            // data
+            // let airline = DOM.elid('airline-name').value;
+            // let flight = DOM.elid('flight-name').value;
+            // let timestamp = DOM.elid('timestamp-id').value;
+
     contract.isOperational((error, result) => {
       console.log(error, result);
       display("Operational Status", "Check if contract is operational", [
@@ -17,12 +22,21 @@ import "./flightsurety.css";
 
     contract.getAirlinesRegisteredFunded((value) => {
       firstAirlineAddress = value;
-      DOM.elid("firstRegisteredAirlineAddress").innerHTML = value;
+      DOM.elid("firstRegisteredAirline").innerHTML = value;
     });
+
+    contract.getAirlines((value) => {
+        console.log(value);
+        DOM.elid("countAirlines").innerHTML = value;
+    });
+
+
+    contract.getCurrentFlights((value) =>{
+      console.log(value);
+    })
 
     DOM.elid("submit-oracle").addEventListener("click", () => {
       let flight = DOM.elid("flight-number").value;
-      // Write transaction
       contract.fetchFlightStatus(flight, (error, result) => {
         display("Oracles", "Trigger oracles", [
           {
@@ -37,7 +51,7 @@ import "./flightsurety.css";
     DOM.elid("payAirline").addEventListener("click", () => {
       
       contract.payAirline(firstAirlineAddress, (response) => {
-          console.log(response)
+          console.log(response);
         displayMessage("pay airline is successful " + response);
       });
     });

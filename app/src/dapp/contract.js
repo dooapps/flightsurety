@@ -59,6 +59,19 @@ export default class Contract {
          .call({from: self.owner}, callback);
   }
 
+  getAirlines(callback) {
+    let self = this;
+    self.flightSuretyData.methods.getAirlines()
+         .call({ from: self.owner}, callback);
+  }
+
+  async getCurrentFlights(callback){
+    let self = this;
+      await self.flightSuretyData.methods.getCurrentFlight()
+      .call({from: self.owner}, callback);
+  }
+
+
   getAirlinesRegisteredFunded(callback) {
     let self = this;
     self.flightSuretyData.methods
@@ -88,13 +101,10 @@ export default class Contract {
     }
   }
 
-  payAirline(address, callback) {
+  async payAirline(address, callback) {
     let self = this;
-    console.log(this.firstAirline);
-    var result = self.flightSuretyApp.methods.pay(this.owner).call(this.owner, {value: this.AIRLINE_FEE})
-      .then(function (result) {
+    var result =  await self.flightSuretyApp.methods.pay(this.owner).call(this.owner, {value: this.AIRLINE_FEE})
         callback(result);
-      });
   }
 
   async registerFlight(callback) {
@@ -116,8 +126,9 @@ export default class Contract {
       this.firstAirline,
       this.flight,
       this.TIMESTAMP,
-      { from: this.passengers[0], value: this.INSURANCE_FEE }
+      { from: this.passengers[8], value: this.INSURANCE_FEE }
     );
+    debugger;
     callback(result);
   }
 
