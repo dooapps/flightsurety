@@ -13,10 +13,9 @@ export default class Contract {
     this.AIRLINE_FEE   = Web3Util.toWei("10", "ether");
     this.INSURANCE_FEE = Web3Util.toWei("1", "ether");
     this.TIMESTAMP     = Math.floor(Date.now() / 1000);
+    this.flight        = "0050";
 
     this.config = Config[network];
-
-    console.log(this.config);
 
     this.web3 = new Web3(new Web3.providers.HttpProvider(this.config.url));
     this.flightSuretyApp = new this.web3.eth.Contract(FlightSuretyApp.abi, this.config.appAddress);
@@ -29,7 +28,7 @@ export default class Contract {
     this.airlines = [];
     this.passengers = [];
 
-    this.flight = "0050";
+    
   }
 
   initialize(callback) {
@@ -65,11 +64,18 @@ export default class Contract {
          .call({ from: self.owner}, callback);
   }
 
+
+
   async getCurrentFlights(callback){
     let self = this;
-      await self.flightSuretyData.methods.getCurrentFlight()
-      .call({from: self.owner}, callback);
+    self.flightSuretyData.methods
+    .getCurrentFlight()
+    .call({from: self.owner})
+        .then(flights=>{
+                callback(flights);
+            });
   }
+
 
 
   getAirlinesRegisteredFunded(callback) {
@@ -101,6 +107,22 @@ export default class Contract {
     }
   }
 
+
+  getFlightInfo(callback){
+    let self = this;
+    self.flightSuretyData.methods
+      .getCurrentFlight()
+      .call()
+      .then((flights) => {
+        callback(flights);
+      })
+      .catch((error) => {
+        alert(error);
+      });
+
+}
+
+
   async payAirline(address, callback) {
     let self = this;
     var result =  await self.flightSuretyApp.methods.pay(this.owner).call(this.owner, {value: this.AIRLINE_FEE})
@@ -111,8 +133,6 @@ export default class Contract {
     let self = this;
     var result = await self.flightSuretyApp.methods.registerFlight.send(
       this.flight,
-      this.flightFrom,
-      this.flightTo,
       this.TIMESTAMP,
       { from: this.firstAirline }
     );

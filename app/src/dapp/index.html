@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>FlightSurety</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- <link rel="icon" type="image/x-icon" href="favicon.ico"> -->
 </head>
 
 <body>
@@ -20,109 +20,33 @@
     </nav>
 
     <main class="container">
-        <h2>Airline Registration</h2>       
-        
-        <div>
-            First Register airline : 
-            <span id="firstRegisteredAirline"></span>    
-            <button id="payAirline">Pay Airline</button>
-        </div>         
-        <br/>   
-        <br/>           
-        <div>
-            <div>
-                <span id="countAirlines">Número de Airlines</span> 
-            </div>
-            <input id="airlineName1" value="airline1"/> 
-            <input id="airlineAddress1" value="0x1eC9603491b86aF1E311DeD20D9a188f39eFCfF3" style="width:400px;" />
-            <button id="registerAirlineBtn1" data-index="1">Register</button>
+        <span  aria-hidden="true" id="oracles-spinner" hidden>Fetching Flight Status</span> 
+         <div id="display-wrapper" class="top-20">
         </div>
-        <div>
-            <input id="airlineName2" value="airline2"/> 
-            <input id="airlineAddress2" value="0xB5e0F4a1251b5bB44708Ca959328a563375B6B08"  style="width:400px;" />
-            <button id="registerAirlineBtn2">Register</button>
+        <div class="row top-20">                    
+                <btn class="btn btn-primary" id="current-flights">Get Current Flights</btn>
+            </span> 
         </div>
-        <div>
-            <input id="airlineName3" value="airline3"/> 
-            <input id="airlineAddress3" value="0xa8e0C3C809f565b2924e85Ae4726e9d825F8151f"  style="width:400px;" />
-            <button id="registerAirlineBtn3">Register</button>
-        </div>
-        <div>
-            <input id="airlineName4" value="airline4"/> 
-            <input id="airlineAddress4" value="0x542D9570752Cb6D321327b88f4DEc13ae66863dc"  style="width:400px;" />
-            <button id="registerAirlineBtn4">Register</button>
-        </div>
-        <div>
-            <input id="airlineName5" value="airline5"/> 
-            <input id="airlineAddress5" value="0x115c27e6a42F2Ee309F68ef2142187054dD13131"  style="width:400px;" />
-            <button id="registerAirlineBtn5">Register (multi-sig consensus) </button>
-        </div>
-       
-
-        <h2>Register Flight</h2>       
-        <button id="registerFlightBtn">Register Flight</button>
-
-
-        <h2>Purchase Insurance</h2>       
-        <button id="purchaseInsurancBtn">Purchase Insurance</button>
-        <!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>FlightSurety</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">FlightSurety</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
-            aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </nav>
-
-    <main class="container">
-        
-        <div >
-            <div class="row top-20">
-                <label class="form" for="flights">Purchase Insurance for 1 ether</label> 
-                
-                <div>
-                    <input type="number" name="amount" id="flight-insurance-amount" placeholder="1 ether" value="1">ether
-                </div>
-            <btn class="btn btn-primary" id="buy-insurance">Buy Insurance</btn>
-        </div>
-
-        <div id="display-wrapper" class="top-20">
-        </div>
-    </main>
-
-</body>
-
-</html>
-
-
-
-
-
-        <div id="msg"></div>
-
-
-
-
-
-
-        <div id="display-wrapper" class="top-20">
+        <div class="row top-20">            
+            <label class="form">Flight</label> <select id="flight-number"></div></select>
+            <btn class="btn btn-primary" id="submit-oracle">                
+                Submit to Oracles
+            </btn>            
         </div>
         <div class="row top-20">
-            <label class="form">Flight</label> <input type="text" id="flight-number"> 
-            <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
+             <label class="form">Buy Insurance</label>
         </div>
+        <div class="row top-20">
+            <label class="form">Flight</label> <select id="insurance-flight"></select>
+        </div>
+        <div class="row top-20">                
+            <label class="form">Amount</label> <input type="text" id="insurance-amount">
+        </div>
+        <div class="row top-20"> 
+            <btn class="btn btn-primary" id="submit-insurance">Buy Insurance</btn>
+        </div>
+        
+    </div>        
     </main>
 
 </body>

@@ -1,150 +1,68 @@
-import DOM from "./dom";
-import Contract from "./contract";
-import "./flightsurety.css";
 
-(async () => {
+import DOM from './dom';
+import Contract from './contract';
+import './flightsurety.css';
+
+(async() => {
   let result = null;
-  let firstAirlineAddress = null;
 
-  let contract = new Contract("localhost", () => {
-    
-            // data
-            // let airline = DOM.elid('airline-name').value;
-            // let flight = DOM.elid('flight-name').value;
-            // let timestamp = DOM.elid('timestamp-id').value;
-
+  let contract = new Contract('localhost', () => {
+    // Read transaction
     contract.isOperational((error, result) => {
-      console.log(error, result);
-      display("Operational Status", "Check if contract is operational", [
-        { label: "Operational Status", error: error, value: result },
-      ]);
+      console.log(error,result);
+      display('Operational Status', 'Check if contract is operational', [{label: 'Operational Status', error: error, value: result}]);
     });
 
-    contract.getAirlinesRegisteredFunded((value) => {
-      firstAirlineAddress = value;
-      DOM.elid("firstRegisteredAirline").innerHTML = value;
-    });
-
-    contract.getAirlines((value) => {
-        console.log(value);
-        DOM.elid("countAirlines").innerHTML = value;
-    });
+   
 
 
-    contract.getCurrentFlights((value) =>{
-      console.log(value);
+    // User-submitted transaction
+    DOM.elid('submit-oracle').addEventListener('click', () => {
+      var flightDropdown = DOM.elid('flight-number');
+      let flightkey = flightDropdown.value;      
+      let flightNumber =flightDropdown.options[flightDropdown.selectedIndex].text
+      
+      contract.fetchFlightStatus(flightkey, (error, result) => {
+        display('Oracles', 'Trigger oracles', [{label: 'Fetch Flight Status', error: error, value: flightNumber}]);
+        displaySpinner();
+        setTimeout(() => {
+          contract.getFlightByKey(flightkey, (error, result) => {
+            display('Oracles', 'Flight Status', [{label: 'Current Flight Status', error: error, value: 'Flight Number: ' + result[1] + ' ' + ' Status Code: ' + getStatusText(result[3]) }]);              
+          });          
+          hideSpinner();
+      }, 2000);
+      });            
     })
 
-    DOM.elid("submit-oracle").addEventListener("click", () => {
-      let flight = DOM.elid("flight-number").value;
-      contract.fetchFlightStatus(flight, (error, result) => {
-        display("Oracles", "Trigger oracles", [
-          {
-            label: "Fetch Flight Status",
-            error: error,
-            value: result.flight + " " + result.timestamp,
-          },
-        ]);
-      });
-    });    
-
-    DOM.elid("payAirline").addEventListener("click", () => {
+    DOM.elid('submit-insurance').addEventListener('click', () => {
+      var insuranceDropdown = DOM.elid('insurance-flight-number');
+      let flightkey = insuranceDropdown.value;      
       
-      contract.payAirline(firstAirlineAddress, (response) => {
-          console.log(response);
-        displayMessage("pay airline is successful " + response);
+      var insuranceAmount = DOM.elid('insurance-amount').value;
+
+      contract.buyInsurance(flightkey, insuranceAmount, (error, result) => {
+        debugger;
+        if(error == null){          
+          display('Insurance', 'Buying Insurance', [{label: '', error: error, value: "Insurance Bought Successfully"}]);                               
+        } else {        
+          display('Insurance', 'Buying Insurance', [{label: '', error: error, value: result}]);                                         
+        }
       });
     });
 
-    
-    DOM.elid("registerAirlineBtn1").addEventListener("click", () => {
-      
-      var name = DOM.elid("airlineName1").value;
-      var address = DOM.elid("airlineAddress1").value;
-      try {
-        contract.registerAirline(name, address, (response) => {
-          displayMessage("airline registration 1 is successful" + response);
-          
-        });
-      } catch (error) {
+    DOM.elid('current-flights').addEventListener('click', () => {
+      contract.getCurrentFlights((error, res) => {
+        console.log(res);        
+        var flightNumberDropdown = DOM.elid('flight-number'); 
+        var insuranceFlightNumberDropdown = DOM.elid('insurance-flight');     
         
-        displayMessage(error);
-      }
-    });
 
-    DOM.elid("registerAirlineBtn2").addEventListener("click", () => {
-      
-      var name = DOM.elid("airlineName2").value;
-      var address = DOM.elid("airlineAddress2").value;
-      contract.registerAirline(name, address, (response) => {
-        displayMessage("airline registration 2 is successful" + response);
-        
-      });
-    });
-
-    DOM.elid("registerAirlineBtn3").addEventListener("click", () => {
-      
-      var name = DOM.elid("airlineName3").value;
-      var address = DOM.elid("airlineAddress3").value;
-      contract.registerAirline(name, address, (response) => {
-        displayMessage("airline registration 3 is successful" + response);
-        
-      });
-    });
-
-    DOM.elid("registerAirlineBtn4").addEventListener("click", () => {
-      
-      var name = DOM.elid("airlineName4").value;
-      var address = DOM.elid("airlineAddress4").value;
-      contract.registerAirline(name, address, (response) => {
-        displayMessage("airline registration 4 is successful" + response);
-        
-      });
-    });
-
-    DOM.elid("registerAirlineBtn5").addEventListener("click", () => {
-      
-      var name = DOM.elid("airlineName5").value;
-      var address = DOM.elid("airlineAddress5").value;
-
-      contract.registerAirline(name, address, (response) => {
-          
-        displayMessage("airline registration 5 is successful" + response);
-        
-      });
-    });
-
-
-    DOM.elid("registerFlightBtn").addEventListener("click", () => {
-        
-        contract.registerFlight((response) => {            
-          debugger;
-          displayMessage("airlined Registered" + response);          
-        });
-      });
-
-      DOM.elid("purchaseInsurancBtn").addEventListener("click", () => {        
-        contract.registerInsurance((response) => {   
-          debugger;         
-          displayMessage("insurance purchased" + response);          
-        });
-      });
-
-
-
-    // DOM.elid('submit-oracle').addEventListener('click', () => {
-    //     let flight = DOM.elid('flight-number').value;
-    //     // Write transaction
-    //     contract.fetchFlightStatus(flight, (error, result) => {
-    //         display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
-    //     });
-    // })
+  
+           
+      });       
+    })
   });
 })();
-
-function displayMessage(msg) {
-  DOM.elid("msg").innerHTML = DOM.elid("msg").innerHTML + "<br/>" + msg;
-}
 
 function display(title, description, results) {
   let displayDiv = DOM.elid("display-wrapper");
@@ -152,15 +70,51 @@ function display(title, description, results) {
   section.appendChild(DOM.h2(title));
   section.appendChild(DOM.h5(description));
   results.map((result) => {
-    let row = section.appendChild(DOM.div({ className: "row" }));
-    row.appendChild(DOM.div({ className: "col-sm-4 field" }, result.label));
-    row.appendChild(
-      DOM.div(
-        { className: "col-sm-8 field-value" },
-        result.error ? String(result.error) : String(result.value)
-      )
-    );
+    let row = section.appendChild(DOM.div({className:'row'}));
+    row.appendChild(DOM.div({className: 'col-sm-4 field'}, result.label));
+    row.appendChild(DOM.div({className: 'col-sm-8 field-value'}, result.error ? String(result.error) : String(result.value)));
     section.appendChild(row);
-  });
-  displayDiv.append(section);
+  })
+  displayDiv.innerHTML = section.innerHTML;
+}
+
+function displaySpinner() {
+  document.getElementById("oracles-spinner").hidden = false;
+  document.getElementById("submit-oracle").disabled = true;
+}
+
+function hideSpinner() {
+  document.getElementById("oracles-spinner").hidden = true;
+  document.getElementById("submit-oracle").disabled = false;
+}
+
+function getStatusText(status) {
+  let STATUS_CODE_UNKNOWN = 0;
+  let STATUS_CODE_ON_TIME = 10;
+  let STATUS_CODE_LATE_AIRLINE = 20;
+  let STATUS_CODE_LATE_WEATHER = 30;
+  let STATUS_CODE_LATE_TECHNICAL = 40;
+  let STATUS_CODE_LATE_OTHER = 50;
+
+  if(status == STATUS_CODE_ON_TIME) {
+    return "ON TIME";
+  }
+
+  if(status == STATUS_CODE_LATE_AIRLINE) {
+    return "LATE - AIRLINE";
+  }
+
+  if(status == STATUS_CODE_LATE_WEATHER) {
+    return "LATE - WEATHER";
+  }
+
+  if(status == STATUS_CODE_LATE_TECHNICAL) {
+    return "LATE - TECHNICAL";
+  }
+
+  if(status == STATUS_CODE_LATE_OTHER) {
+    return "LATE - OTHER";
+  }
+
+  return "UNKNOWN";
 }
