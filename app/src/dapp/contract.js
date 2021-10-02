@@ -1,4 +1,4 @@
-import FlightSuretyApp from '../../../build/contracts/FlightSuretyApp.json';
+import FlightSuretyApp  from '../../../build/contracts/FlightSuretyApp.json';
 import FlightSuretyData from '../../../build/contracts/FlightSuretyData.json';
 import Config from './config.json';
 
@@ -9,6 +9,7 @@ import Web3 from 'web3';
 
 export default class Contract {
   constructor(network, callback) {
+    
 
     this.AIRLINE_FEE   = Web3Util.toWei("10", "ether");
     this.INSURANCE_FEE = Web3Util.toWei("1", "ether");
@@ -39,6 +40,18 @@ export default class Contract {
 
       while (this.airlines.length < 5) {
         this.airlines.push(accts[counter++]);
+        console.log(accts[counter++]);
+        this.flightSuretyApp.methods.registerAirline(accts[counter++])
+                .send({from: this.owner, gas:650000}, (error, result) => {
+                    console.log(accts[counter++] + ' registered');
+                });
+
+        if(counter > 4){
+          this.flightSuretyApp.methods.pay(this.owner)
+          .send({from: accts[counter++], value: this.AIRLINE_FEE, gas:650000}, (error, result) => {
+            console.log(accts[counter++] + ' funded');
+        });;
+        }
       }
 
       while (this.passengers.length < 5) {
@@ -49,7 +62,11 @@ export default class Contract {
       this.flightSuretyData.methods
         .authorizeCaller(this.config.appAddress);
     });
+
   }
+
+
+
 
   isOperational(callback) {
     let self = this;
@@ -68,11 +85,11 @@ export default class Contract {
 
   async getCurrentFlights(callback){
     let self = this;
-    self.flightSuretyData.methods
-    .getCurrentFlight()
-    .call({from: self.owner})
-        .then(flights=>{
-                callback(flights);
+    self.flightSuretyData.methods.getCurrentFlight()
+    .call()
+    .then(flights=>{
+      console.log(flights);
+          callback(flights);
             });
   }
 
@@ -92,11 +109,11 @@ export default class Contract {
       });
   }
 
-  async registerAirline(name, address, callback) {
+  async registerAirline(address, callback) {
     try {
       let self = this;
       var result = await self.flightSuretyApp.methods
-        .registerAirline(name, address)
+        .registerAirline(address)
         .send({ from: this.firstAirline });
       result = await self.flightSuretyData.methods
         .isRegisteredAirline(address)

@@ -6,6 +6,16 @@ import './flightsurety.css';
 (async() => {
   let result = null;
 
+  function is_metamask_installed() {
+    if (typeof window.ethereum !== 'undefined') {                
+        return true
+    } else {                
+        return false
+    }
+  }
+
+
+
   let contract = new Contract('localhost', () => {
     // Read transaction
     contract.isOperational((error, result) => {
@@ -13,6 +23,8 @@ import './flightsurety.css';
       display('Operational Status', 'Check if contract is operational', [{label: 'Operational Status', error: error, value: result}]);
     });
 
+
+    
    
 
 
@@ -51,8 +63,8 @@ import './flightsurety.css';
     });
 
     DOM.elid('current-flights').addEventListener('click', () => {
-      contract.getCurrentFlights((error, res) => {
-        console.log(res);        
+      contract.getCurrentFlights((error, result) => {
+        console.log(result);        
         var flightNumberDropdown = DOM.elid('flight-number'); 
         var insuranceFlightNumberDropdown = DOM.elid('insurance-flight');     
         

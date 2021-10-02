@@ -190,12 +190,12 @@ contract("Flight Surety Tests", accounts => {
       res = await config.flightSuretyData.getCurrentFlight();
       console.log(res);
       for (let i = 0; i < res.length; i++) {
-        console.log(res[i]);
+        //console.log(res[i]);
         ref = await config.flightSuretyData.getFlightInfo.call(res[i]);
-        console.log(ref);
-        for (let x = 0; x < ref.length; x++) {
-          console.log(ref['airline']);
-        }
+        //console.log(ref);
+        // for (let x = 0; x < ref.length; x++) {
+        //   //console.log(ref['airline']);
+        // }
           ;
       } 
       

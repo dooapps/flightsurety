@@ -1,62 +1,62 @@
-var Test = require('./config/config.js');
+// var Test = require('./config/config.js');
 
 
-contract('Oracles', async (accounts) => {
+// contract('Oracles', async (accounts) => {
 
-  const TEST_ORACLES_COUNT = 20;
-  var config;
-  before('setup contract', async () => {
-    config = await Test.Config(accounts);
-
-
-    const STATUS_CODE_UNKNOWN = 0;
-    const STATUS_CODE_ON_TIME = 10;
-    const STATUS_CODE_LATE_AIRLINE = 20;
-    const STATUS_CODE_LATE_WEATHER = 30;
-    const STATUS_CODE_LATE_TECHNICAL = 40;
-    const STATUS_CODE_LATE_OTHER = 50;
-
-  });
+//   const TEST_ORACLES_COUNT = 20;
+//   var config;
+//   before('setup contract', async () => {
+//     config = await Test.Config(accounts);
 
 
-  it('(oracle) it allows to register oracles', async () => {    
-    const fee = await config.flightSuretyApp.REGISTRATION_FEE.call();
+//     const STATUS_CODE_UNKNOWN = 0;
+//     const STATUS_CODE_ON_TIME = 10;
+//     const STATUS_CODE_LATE_AIRLINE = 20;
+//     const STATUS_CODE_LATE_WEATHER = 30;
+//     const STATUS_CODE_LATE_TECHNICAL = 40;
+//     const STATUS_CODE_LATE_OTHER = 50;
 
-    for(let i=1; i < TEST_ORACLES_COUNT; i++) {      
-      await config.flightSuretyApp.registerOracle({ from: accounts[i], value: fee });
-      let result = await config.flightSuretyApp.getMyIndexes.call({from: accounts[i]});
-      console.log('Oracle ->: ${result[0]}, ${result[1]}, ${result[2]}');
-    }
-  });
+//   });
 
-  it('can request flight status', async () => {
-    let passenger1 = accounts[8];
+
+//   it('(oracle) it allows to register oracles', async () => {    
+//     const fee = await config.flightSuretyApp.REGISTRATION_FEE.call();
+
+//     for(let i=1; i < TEST_ORACLES_COUNT; i++) {      
+//       await config.flightSuretyApp.registerOracle({ from: accounts[i], value: fee });
+//       let result = await config.flightSuretyApp.getMyIndexes.call({from: accounts[i]});
+//       console.log('Oracle ->: ${result[0]}, ${result[1]}, ${result[2]}');
+//     }
+//   });
+
+//   it('can request flight status', async () => {
+//     let passenger1 = accounts[8];
     
-    let flight = '0050'; // Course number
+//     let flight = '0050'; // Course number
 
-    await config.flightSuretyApp.fetchFlightStatus(passenger1, flight, config.timestamp);
+//     await config.flightSuretyApp.fetchFlightStatus(passenger1, flight, config.timestamp);
 
-    for(let a=1; a<TEST_ORACLES_COUNT; a++) {
+//     for(let a=1; a<TEST_ORACLES_COUNT; a++) {
 
-      // Get oracle information
-      let oracleIndexes = await config.flightSuretyApp.getMyIndexes.call({ from: accounts[a]});
-      for(let idx=0;idx<3;idx++) {
+//       // Get oracle information
+//       let oracleIndexes = await config.flightSuretyApp.getMyIndexes.call({ from: accounts[a]});
+//       for(let idx=0;idx<3;idx++) {
 
-        try {
-          // Submit a response...it will only be accepted if there is an Index match
-          await config.flightSuretyApp.submitOracleResponse(oracleIndexes[idx], config.firstAirline, flight, config.timestamp, STATUS_CODE_ON_TIME, { from: accounts[a] });
+//         try {
+//           // Submit a response...it will only be accepted if there is an Index match
+//           await config.flightSuretyApp.submitOracleResponse(oracleIndexes[idx], config.firstAirline, flight, config.timestamp, STATUS_CODE_ON_TIME, { from: accounts[a] });
 
-        }
-        catch(e) {
-          // Enable this when debugging
-           console.log('\nError', idx, oracleIndexes[idx].toNumber(), flight, config.timestamp);
-        }
+//         }
+//         catch(e) {
+//           // Enable this when debugging
+//            console.log('\nError', idx, oracleIndexes[idx].toNumber(), flight, config.timestamp);
+//         }
 
-      }
-    }
+//       }
+//     }
 
 
-  });
+//   });
 
  
-});
+// });
