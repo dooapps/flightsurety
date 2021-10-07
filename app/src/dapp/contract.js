@@ -34,7 +34,9 @@ export default class Contract {
 
   initialize(callback) {
     this.web3.eth.getAccounts((error, accts) => {
-      this.owner = accts[0];
+      this.owner     = accts[0];
+      let passenger1 = accts[8];
+      let passenger2 = accts[9];
 
       let counter = 1;
 
@@ -50,7 +52,24 @@ export default class Contract {
           this.flightSuretyApp.methods.pay(this.owner)
           .send({from: accts[counter++], value: this.AIRLINE_FEE, gas:650000}, (error, result) => {
             console.log(accts[counter++] + ' funded');
-        });;
+
+            
+           this.flightSuretyApp.methods.
+           registerFlight(
+            counter.toString(), 
+            this.TIMESTAMP)
+            .send({from: this.owner});
+
+            this.flightSuretyApp.methods.
+            registerInsurance(counter.toString(), this.owner, this.TIMESTAMP)
+            .send({from: passenger1, value: this.AIRLINE_FEE, gas:650000}, (error, result) => {
+              console.log(passenger1 + ' Insuree');
+            });
+
+
+        });
+
+        
         }
       }
 
@@ -148,12 +167,10 @@ export default class Contract {
 
   async registerFlight(callback) {
     let self = this;
-    var result = await self.flightSuretyApp.methods.registerFlight.send(
-      this.flight,
-      this.TIMESTAMP,
-      { from: this.firstAirline }
-    );
-    callback(result);
+    var result = await self.flightSuretyApp.methods
+                      .registerFlight().call(this.flight, this.TIMESTAMP)
+                      .send({ from: this.firstAirline });
+                 callback(result);
   }
 
   async registerInsurance(callback) {

@@ -201,40 +201,40 @@ contract("Flight Surety Tests", accounts => {
       
     });
 
-    // it('(insurance) it allows to passengers may pay up to 1 ether for purchasing flight insurance.', async()=>{
-    //   let passenger1 = accounts[8];
-    //   let passenger2 = accounts[9];
+    it('(insurance) it allows to passengers may pay up to 1 ether for purchasing flight insurance.', async()=>{
+      let passenger1 = accounts[8];
+      let passenger2 = accounts[9];
     
-    //     let value1 = web3.utils.toWei('2', "ether");
-    //     let value2 = web3.utils.toWei('.1', "ether");
+        let value1 = web3.utils.toWei('2', "ether");
+        let value2 = web3.utils.toWei('.1', "ether");
     
-    //     let result1 = false;
-    //     let result2 = false;
+        let result1 = false;
+        let result2 = false;
     
-    //     try {
-    //       let balanceBeforePasseger1 = await web3.eth.getBalance(passenger1);
-    //       console.log(web3.utils.toWei(balanceBeforePasseger1, "ether"));
-    //         await config.flightSuretyApp.registerInsurance("0050", config.owner, config.timestamp,  {from: passenger1, value: value1});
-    //         await config.flightSuretyApp.pay(passenger1, {from: passenger1, value: value1});
-    //         let balanceAfterPasseger1 = await web3.eth.getBalance(passenger1);
-    //         console.log(balanceAfterPasseger1);
-    //     }
-    //     catch(e) {
-    //         result1 = true;
-    //     }
+        try {
+          let balanceBeforePasseger1 = await web3.eth.getBalance(passenger1);
+          console.log(web3.utils.toWei(balanceBeforePasseger1, "ether"));
+            await config.flightSuretyApp.registerInsurance("0050", config.owner, config.timestamp,  {from: passenger1, value: value1});
+            await config.flightSuretyApp.pay(passenger1, {from: passenger1, value: value1});
+            let balanceAfterPasseger1 = await web3.eth.getBalance(passenger1);
+            console.log(balanceAfterPasseger1);
+        }
+        catch(e) {
+            result1 = true;
+        }
     
-    //     try {
-    //         await config.flightSuretyApp.registerInsurance("0050", config.owner, config.timestamp, {from: passenger2, value: value2});
-    //         await config.flightSuretyApp.pay(passenger2, {from: passenger2, value: value2});
-    //     }
-    //     catch(e) {
-    //         result2 = true;
-    //     }
+        try {
+            await config.flightSuretyApp.registerInsurance("0050", config.owner, config.timestamp, {from: passenger2, value: value2});
+            await config.flightSuretyApp.pay(passenger2, {from: passenger2, value: value2});
+        }
+        catch(e) {
+            result2 = true;
+        }
     
-    //     // ASSERT
-    //     assert.equal(result1, true, "the payment should less than 1 ether");
-    //     assert.equal(result2, false, "buy insurence failed");
-    // });
+        // ASSERT
+        assert.equal(result1, true, "the payment should less than 1 ether");
+        assert.equal(result2, false, "buy insurence failed");
+    });
 
 
 });
